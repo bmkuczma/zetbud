@@ -40,6 +40,64 @@ function zetbud_topic_labels(): array
     ];
 }
 
+function zetbud_phone_digits_only(string $s): string
+{
+    return preg_replace('/\D+/u', '', $s) ?? '';
+}
+
+/** Maks. długość numeru krajowego (bez kodu) — zgodnie z opcjami w index.html */
+function zetbud_phone_national_max(string $ccDigits): int
+{
+    static $map = [
+        '1' => 10,
+        '44' => 10,
+        '48' => 9,
+        '49' => 11,
+        '380' => 9,
+        '420' => 9,
+        '421' => 9,
+        '370' => 8,
+        '46' => 9,
+        '47' => 8,
+        '45' => 8,
+        '31' => 9,
+        '353' => 9,
+        '33' => 9,
+        '39' => 10,
+        '43' => 11,
+        '34' => 9,
+    ];
+
+    return $map[$ccDigits] ?? 15;
+}
+
+/**
+ * Składa telefon z pól formularza (bez ukrytego pola zależnego od JS — autofill nie zawsze wywołuje input).
+ */
+function zetbud_phone_from_post(): string
+{
+    $ccRaw = trim((string) ($_POST['phone_country'] ?? '+48'));
+    $nat = zetbud_phone_digits_only((string) ($_POST['phone_national'] ?? ''));
+    $ccDigits = zetbud_phone_digits_only($ccRaw);
+    $metaMax = zetbud_phone_national_max($ccDigits);
+
+    if ($ccRaw === '+1' && strlen($nat) === 11 && str_starts_with($nat, '1')) {
+        $nat = substr($nat, 1);
+    }
+    while ($ccDigits !== '' && str_starts_with($nat, $ccDigits) && strlen($nat) > $metaMax) {
+        $nat = substr($nat, strlen($ccDigits));
+    }
+    if ($nat !== '' && $nat[0] === '0' && strlen($nat) === $metaMax + 1) {
+        $nat = substr($nat, 1);
+    }
+    $nat = substr($nat, 0, $metaMax);
+    if ($ccRaw === '') {
+        $ccRaw = $ccDigits !== '' ? '+' . $ccDigits : '';
+    }
+
+    return trim($ccRaw . ' ' . $nat);
+}
+
 function zetbud_load_phpmailer(): void
 {
     static $loaded = false;
@@ -139,12 +197,22 @@ function zetbud_send_via_smtp(
 
     $mail = new PHPMailer(true);
     $mail->CharSet = PHPMailer::CHARSET_UTF8;
+    $mail->Timeout = 30;
     $mail->isSMTP();
     $mail->Host = $host;
     $mail->SMTPAuth = true;
     $mail->Username = $user;
     $mail->Password = $pass;
     $mail->Port = $port;
+    if (defined('ZETBUD_SMTP_INSECURE') && ZETBUD_SMTP_INSECURE) {
+        $mail->SMTPOptions = [
+            'ssl' => [
+                'verify_peer' => false,
+                'verify_peer_name' => false,
+                'allow_self_signed' => true,
+            ],
+        ];
+    }
     /* seohost.pl: 465 = implicit TLS (jak w AdwokatKuczma / nodemailer secure: true), 587 = STARTTLS */
     if ($port === 465) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
@@ -166,6 +234,37 @@ function zetbud_send_via_smtp(
     $mail->send();
 }
 
+/**
+ * Wyciąga adres e-mail z nagłówka From (np. "Zet-Bud <kontakt@domena.pl>").
+ */
+function zetbud_extract_email_from_from_header(string $header): ?string
+{
+    $header = trim($header);
+    if ($header === '') {
+        return null;
+    }
+    if (preg_match('/<([^>]+)>/', $header, $m)) {
+        $addr = trim($m[1]);
+
+        return filter_var($addr, FILTER_VALIDATE_EMAIL) ? $addr : null;
+    }
+
+    return filter_var($header, FILTER_VALIDATE_EMAIL) ? $header : null;
+}
+
+/**
+ * Opcjonalny parametr dodatkowy dla mail() — -f envelope (wymagany na części hostingów).
+ */
+function zetbud_mail_envelope_param(string $fromHeader): string
+{
+    $addr = zetbud_extract_email_from_from_header($fromHeader);
+    if ($addr === null) {
+        return '';
+    }
+
+    return '-f' . $addr;
+}
+
 function zetbud_send_via_mail(
     string $mailTo,
     string $email,
@@ -180,8 +279,20 @@ function zetbud_send_via_mail(
         'Reply-To: ' . $email,
         'X-Mailer: PHP/' . PHP_VERSION,
     ];
+    $headerStr = implode("\r\n", $headers);
+    $extra = zetbud_mail_envelope_param($fromHeader);
+    $ok = @mail($mailTo, $subjectEncoded, $plainBody, $headerStr, $extra);
+    if (!$ok && $extra !== '') {
+        $ok = @mail($mailTo, $subjectEncoded, $plainBody, $headerStr, '');
+    }
+    if (!$ok) {
+        $last = error_get_last();
+        if ($last !== null) {
+            error_log('[zet-bud contact] mail(): ' . $last['message']);
+        }
+    }
 
-    return @mail($mailTo, $subjectEncoded, $plainBody, implode("\r\n", $headers));
+    return $ok;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -210,7 +321,8 @@ if (!empty($_SESSION['zet_bud_last_send']) && ($now - (int) $_SESSION['zet_bud_l
 }
 
 $name = trim((string) ($_POST['name'] ?? ''));
-$phone = trim((string) ($_POST['phone'] ?? ''));
+$phoneLegacy = trim((string) ($_POST['phone'] ?? ''));
+$phone = zetbud_phone_from_post();
 $email = trim((string) ($_POST['email'] ?? ''));
 $message = trim((string) ($_POST['message'] ?? ''));
 
@@ -221,7 +333,13 @@ $len = static function (string $s): int {
 if ($len($name) < 2 || $len($name) > 220) {
     zetbud_redirect('wycena=0&lang=' . $formLang . '&why=bad_name');
 }
-if ($len($phone) < 6 || $len($phone) > 40) {
+$phoneDigits = zetbud_phone_digits_only($phone);
+$legacyDigits = zetbud_phone_digits_only($phoneLegacy);
+if (strlen($phoneDigits) < 6 && strlen($legacyDigits) >= 6) {
+    $phone = $phoneLegacy;
+    $phoneDigits = $legacyDigits;
+}
+if (strlen($phoneDigits) < 6 || $len($phone) > 45 || strlen($phoneDigits) > 18) {
     zetbud_redirect('wycena=0&lang=' . $formLang . '&why=bad_phone');
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -254,7 +372,7 @@ if ($smtpConfigured) {
         zetbud_send_via_smtp($mailTo, $safeName, $phone, $email, $topicLine, $plainBody, $htmlBody);
         $sent = true;
     } catch (Throwable $e) {
-        error_log('[zet-bud contact] SMTP: ' . $e->getMessage());
+        error_log('[zet-bud contact] SMTP: ' . $e->getMessage() . ' [' . get_class($e) . ']');
         $sent = false;
     }
 }

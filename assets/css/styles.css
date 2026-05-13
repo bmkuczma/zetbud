@@ -198,7 +198,8 @@ a:hover { color: var(--accent-hover); }
   opacity: 0;
 }
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
-  .btn--primary:hover::after {
+  .btn--primary:hover::after,
+  .btn--primary:focus-visible::after {
     animation: zetbud-btn-shine 0.85s var(--ease-out) forwards;
   }
 }
@@ -1388,6 +1389,61 @@ blockquote footer strong { color: var(--text); }
 
 form .field { margin-bottom: var(--space-4); }
 
+form .field > label {
+  transition: color 0.22s ease;
+}
+
+form .field:focus-within > label {
+  color: color-mix(in srgb, var(--accent) 78%, var(--text));
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  body.site-motion main > section.in-view .contact-card:has(#quote-form) {
+    animation: zetbud-form-card-glow 1.45s ease-out 0.12s both;
+  }
+
+  body.site-motion main > section.in-view #quote-form > .field:nth-child(3) {
+    animation: zetbud-field-in 0.48s var(--ease-spring) 0.08s both;
+  }
+  body.site-motion main > section.in-view #quote-form > .field:nth-child(4) {
+    animation: zetbud-field-in 0.48s var(--ease-spring) 0.14s both;
+  }
+  body.site-motion main > section.in-view #quote-form > .field:nth-child(5) {
+    animation: zetbud-field-in 0.48s var(--ease-spring) 0.2s both;
+  }
+  body.site-motion main > section.in-view #quote-form > .field:nth-child(6) {
+    animation: zetbud-field-in 0.48s var(--ease-spring) 0.26s both;
+  }
+  body.site-motion main > section.in-view #quote-form > .field:nth-child(7) {
+    animation: zetbud-field-in 0.48s var(--ease-spring) 0.32s both;
+  }
+
+  body.site-motion main > section.in-view #quote-form > .btn--block {
+    animation: zetbud-field-in 0.5s var(--ease-spring) 0.38s both;
+  }
+}
+
+@keyframes zetbud-form-card-glow {
+  0%,
+  100% {
+    box-shadow: none;
+  }
+  50% {
+    box-shadow: 0 14px 42px -18px color-mix(in srgb, var(--accent) 42%, transparent);
+  }
+}
+
+@keyframes zetbud-field-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 .field--phone .phone-composer {
   display: flex;
   flex-wrap: wrap;
@@ -1403,36 +1459,25 @@ form .field { margin-bottom: var(--space-4); }
 }
 
 .field--phone .phone-national-cell {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
   flex: 1 1 14rem;
   min-width: 0;
 }
 
 .field--phone .phone-national {
-  width: auto;
-  flex: 1 1 8rem;
-  min-width: 7rem;
+  width: 100%;
+  min-width: 0;
 }
 
-.field--phone .phone-format-hint {
-  flex: 0 0 auto;
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 0.875rem;
-  letter-spacing: 0.04em;
+.field-hint {
+  margin: var(--space-2) 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
   color: var(--text-muted);
-  white-space: nowrap;
-  user-select: none;
-  opacity: 0.88;
 }
 
 @media (max-width: 520px) {
   .field--phone .phone-national-cell {
     flex-basis: 100%;
-  }
-  .field--phone .phone-format-hint {
-    margin-left: auto;
   }
 }
 
@@ -1475,6 +1520,25 @@ select:focus {
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-soft);
   background: var(--surface);
+}
+
+/* Jedna ramka fokusu — globalne :focus-visible nie dokłada drugiego obrysu na polach formularza */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+}
+
+input::selection,
+textarea::selection {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  color: var(--text);
+}
+
+[data-theme="dark"] input::selection,
+[data-theme="dark"] textarea::selection {
+  background: color-mix(in srgb, var(--accent) 42%, transparent);
+  color: var(--text);
 }
 
 input:user-invalid:not(:focus):not(:placeholder-shown),

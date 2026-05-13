@@ -1,16 +1,30 @@
 <?php
 /**
  * Skopiuj ten plik jako config.local.php (obok index.html i contact.php).
- * Uzupełnij dane SMTP z panelu seohost.pl (Webmail / Poczta — serwer poczty wychodzącej),
- * tak jak w projekcie AdwokatKuczma (np. host postaci h67.seohost.pl — u Ciebie może być inny numer serwera).
+ * Uzupełnij dane SMTP z panelu hostingu (np. seohost.pl — Webmail / ustawienia poczty wychodzącej).
  *
  * Nie commituj tego pliku z prawdziwym hasłem do publicznego repozytorium.
  */
 
+// --- Produkcja: zet-bud.pl (docelowo użyj skrzynki na tej domenie) ---
+// define('ZETBUD_MAIL_TO', 'biuro@zet-bud.pl');
+// define('SMTP_HOST', 'hXX.seohost.pl'); // dokładny host z panelu — NIE zgaduj numeru
+// define('SMTP_PORT', 465);
+// define('SMTP_USER', 'kontakt@zet-bud.pl');
+// define('SMTP_PASSWORD', '...');
+// define('SMTP_FROM', 'kontakt@zet-bud.pl');
+// define('SMTP_FROM_NAME', 'Zet-Bud — formularz');
+// define('ZETBUD_SMTP_HELO', 'zet-bud.pl');
+
 /**
- * --- Pierwsze wdrożenie: patrycjakuczma.pl ---
- * Zgłoszenia z formularza idą na Twój Gmail; wychodzą przez skrzynkę baq@ (SMTP + From zgodne ze SPF).
- * Opcjonalnie w panelu możesz ustawić przekierowanie baq@ → Gmail na wypadek zwykłej poczty na tę skrzynkę.
+ * Tylko diagnostyka TLS (stary serwer / łańcuch certyfikatów).
+ * Wyłącz po naprawie — osłabia weryfikację SSL.
+ */
+// define('ZETBUD_SMTP_INSECURE', true);
+
+/**
+ * --- Staging / pierwsze testy (inna domena w projekcie referencyjnym) ---
+ * Zgłoszenia mogą iść na Gmail; wychodzą przez skrzynkę na domenie zgodnej ze SPF.
  */
 define('ZETBUD_MAIL_TO', 'bakuthegod@gmail.com');
 
@@ -23,15 +37,5 @@ define('SMTP_FROM', 'baq@patrycjakuczma.pl');
 define('SMTP_FROM_NAME', 'Zet-Bud — formularz');
 define('ZETBUD_SMTP_HELO', 'patrycjakuczma.pl');
 
-/**
- * --- Na docelowej domenie zet-bud.pl (potem podmień powyższe) ---
- * define('ZETBUD_MAIL_TO', 'biuro@zet-bud.pl');
- * define('SMTP_USER', 'kontakt@zet-bud.pl');
- * define('SMTP_PASSWORD', '...');
- * define('SMTP_FROM', 'kontakt@zet-bud.pl');
- * define('SMTP_FROM_NAME', 'Zet-Bud');
- * define('ZETBUD_SMTP_HELO', 'zet-bud.pl');
- */
-
-/** Opcjonalny fallback dla funkcji mail() (tylko gdy nie używasz SMTP) */
-// define('ZETBUD_MAIL_FROM', 'noreply@patrycjakuczma.pl');
+/** Opcjonalny nagłówek From dla funkcji mail() (gdy SMTP wyłączone lub w fallbacku) */
+// define('ZETBUD_MAIL_FROM', 'baq@patrycjakuczma.pl');

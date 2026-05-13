@@ -261,9 +261,7 @@
   function initPhoneComposer() {
     var country = document.getElementById('phone-country');
     var national = document.getElementById('phone-national');
-    var hidden = document.getElementById('phone');
-    var hint = document.getElementById('phone-format-hint');
-    if (!country || !national || !hidden || !hint) return;
+    if (!country || !national) return;
 
     function shortNumMsg() {
       return document.documentElement.getAttribute('lang') === 'en'
@@ -276,31 +274,33 @@
       var max = parseInt(opt.getAttribute('data-national-max') || '15', 10);
       if (isNaN(max) || max < 6) max = 15;
       if (max > 15) max = 15;
-      return {
-        max: max,
-        mask: opt.getAttribute('data-mask') || '_______________',
-      };
+      return { max: max };
     }
 
     function syncPhone() {
       var meta = getMeta();
-      national.setAttribute('maxlength', String(meta.max));
-      hint.textContent = meta.mask;
-      var raw = national.value.replace(/\D/g, '');
       var ccDigits = country.value.replace(/\D/g, '');
-      if (ccDigits.length >= 2 && raw.indexOf(ccDigits) === 0 && raw.length > meta.max) {
+      /* Bufor na wklejkę z kodem kraju — bez tego przeglądarka obcina wklejkę do maxlength = max krajowych. */
+      var inputCap = ccDigits.length + meta.max + 4;
+      if (inputCap < 16) inputCap = 16;
+      national.setAttribute('maxlength', String(inputCap));
+
+      var raw = national.value.replace(/\D/g, '');
+      if (country.value === '+1' && raw.length === 11 && raw.charAt(0) === '1') {
+        raw = raw.slice(1);
+      }
+      while (ccDigits.length >= 1 && raw.indexOf(ccDigits) === 0 && raw.length > meta.max) {
         raw = raw.slice(ccDigits.length);
-      } else if (country.value === '+1' && raw.length === 11 && raw.charAt(0) === '1') {
+      }
+      if (raw.charAt(0) === '0' && raw.length === meta.max + 1) {
         raw = raw.slice(1);
       }
       var d = raw.slice(0, meta.max);
       national.value = d;
       if (d.length > 0 && d.length < 6) {
         national.setCustomValidity(shortNumMsg());
-        hidden.value = '';
       } else {
         national.setCustomValidity('');
-        hidden.value = d.length >= 6 ? country.value + ' ' + d : '';
       }
     }
 
@@ -309,6 +309,8 @@
       syncPhone();
     });
     national.addEventListener('input', syncPhone);
+    national.addEventListener('change', syncPhone);
+    national.addEventListener('blur', syncPhone);
     syncPhoneBeforeSubmit = syncPhone;
     syncPhone();
   }

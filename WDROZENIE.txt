@@ -47,12 +47,13 @@ WYSYŁKA E-MAIL (SMTP seohost.pl)
 3. Skopiuj **config.local.php.example** → **config.local.php** i uzupełnij:
    - SMTP_HOST, SMTP_PORT (zwykle **465** z szyfrowaniem SSL),
    - SMTP_USER = pełny adres skrzynki,
-   - SMTP_PASSWORD,
+   - SMTP_PASSWORD (nie zostawiaj placeholdera „TU_WSTAW…”),
    - SMTP_FROM (najczęściej ten sam co SMTP_USER),
    - SMTP_FROM_NAME, ZETBUD_MAIL_TO (odbiorca zgłoszeń),
    - ZETBUD_SMTP_HELO = domena strony (**patrycjakuczma.pl** na stagingu, potem **zet-bud.pl**).
 4. Wgraj na serwer cały katalog **lib/PHPMailer** (contact.php ładuje pliki z lib/PHPMailer/src/).
-5. Jeśli SMTP nie działa, sprawdź logi błędów PHP na hostingu; contact.php zapisuje błąd SMTP przez error_log.
+5. Jeśli SMTP nie działa, sprawdź logi błędów PHP na hostingu; contact.php zapisuje błąd SMTP przez error_log (z klasą wyjątku). Przy błędach TLS możesz **tymczasowo** ustawić w config.local.php **ZETBUD_SMTP_INSECURE** (patrz przykład) — tylko do diagnozy, potem wyłącz.
+6. Fallback **mail()**: contact.php dodaje parametr **-f** (nadawca koperty), często wymagany na hostingu; jeśli nadal false, sprawdź czy hosting nie blokuje wychodzącej poczty.
 
 Fallback: gdy w config.local.php **nie** zdefiniujesz SMTP_HOST / SMTP_USER / SMTP_PASSWORD,
 skrypt spróbuje wysłać wiadomość przez funkcję mail() (często zablokowaną na współdzielonym hostingu).

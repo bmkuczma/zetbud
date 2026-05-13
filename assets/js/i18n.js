@@ -190,8 +190,8 @@
     napTitle: 'Contact details (NAP)',
     napHours: 'Hours: Mon–Fri 7:30–17:00',
     napMaps: 'Open route in Google Maps',
-    mapFrameTitle: 'Map — Potokowa St 52, Kłosowo',
-    mapEmbedAria: 'Google Map — Potokowa Street, Kłosowo',
+    mapFrameTitle: 'Map — ul. Nad Potokiem 54, Kłosowo',
+    mapEmbedAria: 'Google Map — ul. Nad Potokiem 54, Kłosowo',
 
     faqEyebrow: 'FAQ',
     faqTitle: 'Questions before the first meeting',
@@ -229,6 +229,9 @@
     formName: 'Full name / company',
     formNamePh: 'e.g. John Smith or ACME Ltd',
     formPhone: 'Phone',
+    formPhoneHint:
+      'Enter the national number — digits only, no spaces. Length depends on the country (Poland: 9 digits).',
+    formPhoneNationalPh: 'e.g. 501234567',
     formPhoneCountryAria: 'Country calling code',
     formEmail: 'E-mail',
     formEmailPh: 'you@company.com',
@@ -301,14 +304,14 @@
         ],
         address: {
           '@type': 'PostalAddress',
-          streetAddress: 'ul. Potokowa 52',
+          streetAddress: 'ul. Nad Potokiem 54',
           addressLocality: 'Kłosowo',
           addressRegion: 'pomorskie',
           postalCode: '83-304',
           addressCountry: 'PL',
         },
-        geo: { '@type': 'GeoCoordinates', latitude: 54.419, longitude: 18.2828 },
-        hasMap: 'https://www.google.com/maps/search/?api=1&query=Potokowa+52%2C+K%C5%82osowo%2C+Polska',
+        geo: { '@type': 'GeoCoordinates', latitude: 54.40764, longitude: 18.26584 },
+        hasMap: 'https://www.google.com/maps/search/?api=1&query=54.40764%2C18.26584',
         areaServed: [
           { '@type': 'AdministrativeArea', name: 'Pomeranian Voivodeship' },
           { '@type': 'City', name: 'Kłosowo' },
@@ -629,7 +632,7 @@
         err: 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.',
         rate: 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.',
         errByWhy: {
-          mail: 'Wiadomość nie została wysłana z powodu problemu po stronie serwera poczty. Spróbuj ponownie za chwilę lub zadzwoń: +48 601 234 567. Jeśli błąd się powtarza, hosting wymaga poprawnej konfiguracji SMTP (plik config.local.php).',
+          mail: 'Wiadomość nie została wysłana z powodu problemu po stronie serwera poczty. Spróbuj ponownie za chwilę lub zadzwoń: +48 601 234 567. Na hostingu musi istnieć poprawny plik config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). W panelu sprawdź logi PHP (error_log) — tam trafia treść błędu SMTP. Przy błędach certyfikatu TLS można tymczasowo włączyć ZETBUD_SMTP_INSECURE w config (tylko diagnostyka).',
           bad_name: 'Sprawdź pole z imieniem lub nazwą firmy (min. 2 znaki).',
           bad_phone: 'Telefon jest za krótki. Wpisz co najmniej 6 cyfr numeru krajowego (bez +48) albo wklej pełny numer — zostanie poprawiony automatycznie.',
           bad_email: 'Sprawdź poprawność adresu e-mail.',
@@ -643,7 +646,7 @@
         err: 'The form could not be sent. Check the fields or call +48 601 234 567.',
         rate: 'Please wait a moment before sending again.',
         errByWhy: {
-          mail: 'The message could not be sent due to a mail server issue. Please try again shortly or call +48 601 234 567. If this keeps happening, the host needs SMTP configured (config.local.php).',
+          mail: 'The message could not be sent due to a mail server issue. Please try again shortly or call +48 601 234 567. The host needs a valid config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). Check PHP error_log for the SMTP error message. For TLS certificate issues you can temporarily set ZETBUD_SMTP_INSECURE in config (diagnostics only).',
           bad_name: 'Please check the name / company field (min. 2 characters).',
           bad_phone: 'The phone number looks too short. Enter at least 6 national digits (without +48) or paste the full number — it will be normalized.',
           bad_email: 'Please check that your e-mail address is valid.',
