@@ -61,13 +61,13 @@
         <span class="brand-name"><span class="brand-name__red">Zet</span><span class="brand-name__black">-Bud</span></span>
       </a>
 
-      <nav class="nav-desktop" aria-label="Nawigacja główna">
-        <a href="#uslugi">Usługi</a>
-        <a href="#dlaczego-my">Dlaczego my</a>
-        <a href="#realizacje">Realizacje</a>
-        <a href="#dojazd">Dojazd</a>
-        <a href="#faq">FAQ</a>
-        <a href="#kontakt">Kontakt</a>
+      <nav class="nav-desktop" aria-label="Nawigacja główna" id="nav-desktop">
+        <a href="#uslugi" data-nav-section="uslugi">Usługi</a>
+        <a href="#dlaczego-my" data-nav-section="dlaczego-my">Dlaczego my</a>
+        <a href="#realizacje" data-nav-section="realizacje">Realizacje</a>
+        <a href="#dojazd" data-nav-section="dojazd">Dojazd</a>
+        <a href="#faq" data-nav-section="faq">FAQ</a>
+        <a href="#kontakt" data-nav-section="kontakt">Kontakt</a>
       </nav>
 
       <div class="header-actions">
@@ -86,13 +86,20 @@
       </div>
     </div>
 
-    <div class="container mobile-nav" id="mobile-menu" hidden>
-      <a href="#uslugi">Usługi</a>
-      <a href="#dlaczego-my">Dlaczego my</a>
-      <a href="#realizacje">Realizacje</a>
-      <a href="#dojazd">Dojazd</a>
-      <a href="#faq">FAQ</a>
-      <a href="#kontakt">Kontakt</a>
+    <div class="nav-overlay" id="nav-overlay" aria-hidden="true" tabindex="-1"></div>
+    <div
+      class="container mobile-nav"
+      id="mobile-menu"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-label="Menu nawigacji strony">
+      <a href="#uslugi" data-nav-section="uslugi">Usługi</a>
+      <a href="#dlaczego-my" data-nav-section="dlaczego-my">Dlaczego my</a>
+      <a href="#realizacje" data-nav-section="realizacje">Realizacje</a>
+      <a href="#dojazd" data-nav-section="dojazd">Dojazd</a>
+      <a href="#faq" data-nav-section="faq">FAQ</a>
+      <a href="#kontakt" data-nav-section="kontakt">Kontakt</a>
       <a class="btn btn--primary" href="#kontakt">Umów bezpłatną wycenę</a>
     </div>
   </header>
@@ -215,7 +222,7 @@
           </article>
         </div>
 
-        <p style="margin-top: var(--space-10); margin-bottom: 0;">
+        <p class="section-cta">
           <a class="btn btn--primary" href="#kontakt">Umów bezpłatną wycenę</a>
         </p>
       </div>
@@ -404,9 +411,9 @@
             <li class="pill">całe woj. pomorskie — po uzgodnieniu</li>
           </ul>
         </div>
-        <div class="contact-card">
-          <h3 style="margin-top:0;font-family:var(--font-display);font-size:1.25rem;">Typowe terminy startu</h3>
-          <p style="margin-bottom:0;font-size:0.9375rem;">Małe remonty wykończeniowe: często w ciągu 3–4 tygodni od akceptacji kosztorysu. Większe projekty budowlane: planujemy z wyprzedzeniem 6–10 tygodni, żeby zamknąć dostawy i rusztowania.</p>
+        <div class="contact-card contact-card--highlight">
+          <h3 class="contact-card__title">Typowe terminy startu</h3>
+          <p class="contact-card__text">Małe remonty wykończeniowe: często w ciągu 3–4 tygodni od akceptacji kosztorysu. Większe projekty budowlane: planujemy z wyprzedzeniem 6–10 tygodni, żeby zamknąć dostawy i rusztowania.</p>
         </div>
       </div>
     </section>
@@ -422,12 +429,12 @@
           <div class="contact-card local-nap">
             <h3 class="local-nap__title">Dane do kontaktu (NAP)</h3>
             <p class="local-nap__line"><strong>Zet-Bud Sp. z o.o.</strong></p>
-            <p class="local-nap__line">ul. Potokowa 52, 83-304 Kłosowo <span class="local-nap__muted" style="display:block;margin-top:var(--space-2);font-size:0.8125rem;">(gmina Przodkowo, powiat kartuski)</span></p>
+            <p class="local-nap__line">ul. Potokowa 52, 83-304 Kłosowo <span class="local-nap__sub">(gmina Przodkowo, powiat kartuski)</span></p>
             <p class="local-nap__line">tel. <a href="tel:+48601234567">+48 601 234 567</a></p>
             <p class="local-nap__line"><a href="mailto:biuro@zet-bud.pl">biuro@zet-bud.pl</a></p>
             <p class="local-nap__line">NIP 6792811123 · REGON 382910847</p>
             <p class="local-nap__muted">Godziny: pn–pt 7:30–17:00</p>
-            <p class="local-nap__muted" style="margin-bottom:0;"><a href="https://www.google.com/maps/search/?api=1&amp;query=Potokowa+52%2C+K%C5%82osowo%2C+Polska" rel="noopener noreferrer">Otwórz trasę w Google Maps</a></p>
+            <p class="local-nap__muted local-nap__muted--flush"><a href="https://www.google.com/maps/search/?api=1&amp;query=Potokowa+52%2C+K%C5%82osowo%2C+Polska" rel="noopener noreferrer">Otwórz trasę w Google Maps</a></p>
           </div>
           <div class="map-embed" aria-label="Mapa Google — ul. Potokowa, Kłosowo">
             <iframe
@@ -454,7 +461,9 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
             <div class="faq-panel" id="faq-1" role="region" aria-labelledby="faq-btn-1">
-              <p>Tak — dla typowych inwestycji mieszkaniowych oględziny i wstępny kosztorys są bezpłatne. Jeśli projekt wymaga wielobranżowych konsultacji lub analiz geotechnicznych poza standardem, informujemy o tym przed uruchomieniem dodatkowych usług.</p>
+              <div class="faq-panel__inner">
+                <p>Tak — dla typowych inwestycji mieszkaniowych oględziny i wstępny kosztorys są bezpłatne. Jeśli projekt wymaga wielobranżowych konsultacji lub analiz geotechnicznych poza standardem, informujemy o tym przed uruchomieniem dodatkowych usług.</p>
+              </div>
             </div>
           </div>
 
@@ -464,7 +473,9 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
             <div class="faq-panel" id="faq-2" role="region" aria-labelledby="faq-btn-2">
-              <p>Uwzględniamy dostęp do windy, okna czasowe hałasu, dostawy materiałów „pod okno” oraz czas schnięcia tynków i mas. Harmonogram tygodniowy aktualizujemy po każdej kamieniu milowym — tak, aby sąsiedztwo i najemca mieli przewidywalność.</p>
+              <div class="faq-panel__inner">
+                <p>Uwzględniamy dostęp do windy, okna czasowe hałasu, dostawy materiałów „pod okno” oraz czas schnięcia tynków i mas. Harmonogram tygodniowy aktualizujemy po każdej kamieniu milowym — tak, aby sąsiedztwo i najemca mieli przewidywalność.</p>
+              </div>
             </div>
           </div>
 
@@ -474,7 +485,9 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
             <div class="faq-panel" id="faq-3" role="region" aria-labelledby="faq-btn-3">
-              <p>Tak, przy czym w kosztorysie oznaczamy odpowiedzialność za magazynowanie i kompatybilność systemów (np. kleje do płytek vs. ogrzewanie podłogowe). Materiały poza listą rekomendowanych producentów wymagają akceptacji technicznej przed wbiciem w budżet.</p>
+              <div class="faq-panel__inner">
+                <p>Tak, przy czym w kosztorysie oznaczamy odpowiedzialność za magazynowanie i kompatybilność systemów (np. kleje do płytek vs. ogrzewanie podłogowe). Materiały poza listą rekomendowanych producentów wymagają akceptacji technicznej przed wbiciem w budżet.</p>
+              </div>
             </div>
           </div>
 
@@ -484,7 +497,9 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
             <div class="faq-panel" id="faq-4" role="region" aria-labelledby="faq-btn-4">
-              <p>Przekazujemy protokół końcowy i karty gwarancyjne producentów. Zgłoszenia przyjmujemy mailowo i telefonicznie — dla wykończeń wewnętrznych udzielamy 24 miesięcy rękojmi z możliwością wydłużenia pakietami premium do 5 lat na wybrane systemy.</p>
+              <div class="faq-panel__inner">
+                <p>Przekazujemy protokół końcowy i karty gwarancyjne producentów. Zgłoszenia przyjmujemy mailowo i telefonicznie — dla wykończeń wewnętrznych udzielamy 24 miesięcy rękojmi z możliwością wydłużenia pakietami premium do 5 lat na wybrane systemy.</p>
+              </div>
             </div>
           </div>
 
@@ -494,7 +509,9 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M6 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
             </button>
             <div class="faq-panel" id="faq-5" role="region" aria-labelledby="faq-btn-5">
-              <p>Tak — przygotowujemy harmonogram prac do wiadomości wspólnoty, oznakowanie stref i kontakt techniczny dla zarządcy. Nie prowadzimy spraw urzędowych w Twoim imieniu, ale dostarczamy dokumentację potrzebną do uzgodnień.</p>
+              <div class="faq-panel__inner">
+                <p>Tak — przygotowujemy harmonogram prac do wiadomości wspólnoty, oznakowanie stref i kontakt techniczny dla zarządcy. Nie prowadzimy spraw urzędowych w Twoim imieniu, ale dostarczamy dokumentację potrzebną do uzgodnień.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -508,11 +525,11 @@
           <h2 id="kontakt-title">Umów bezpłatną wycenę — wrócimy z propozycją terminu oględzin</h2>
           <p>Zostaw krótki opis inwestycji i preferowany kontakt. Oddzwonimy, żeby doprecyzować zakres i przygotować listę pytań na pierwsze spotkanie.</p>
 
-          <div class="contact-card" style="margin-top: var(--space-8);">
-            <p style="margin:0 0 var(--space-3); font-weight:600; color: var(--text);">Zadzwoń</p>
-            <p style="margin:0 0 var(--space-4);"><a href="tel:+48601234567">+48 601 234 567</a> · pn–pt, 7:30–17:00</p>
-            <p style="margin:0 0 var(--space-3); font-weight:600; color: var(--text);">Napisz</p>
-            <p style="margin:0;"><a href="mailto:biuro@zet-bud.pl">biuro@zet-bud.pl</a></p>
+          <div class="contact-card contact-aside">
+            <p class="contact-aside__label">Zadzwoń</p>
+            <p class="contact-aside__block"><a href="tel:+48601234567">+48 601 234 567</a> · pn–pt, 7:30–17:00</p>
+            <p class="contact-aside__label">Napisz</p>
+            <p class="contact-aside__block contact-aside__block--last"><a href="mailto:biuro@zet-bud.pl">biuro@zet-bud.pl</a></p>
           </div>
         </div>
 
@@ -551,8 +568,8 @@
               <label for="message">Krótki opis prac i lokalizacja</label>
               <textarea id="message" name="message" required placeholder="Metraż, stan obecny, oczekiwany termin startu, link do map lub PIN działki."></textarea>
             </div>
-            <button type="submit" class="btn btn--primary" style="width:100%;">Wyślij zapytanie o bezpłatną wycenę</button>
-            <p class="form-note">Wysyłając formularz potwierdzasz zapoznanie się z polityką prywatności i zasadami kontaktu handlowego. Wysyłka przez SMTP seohost.pl (PHPMailer): skopiuj plik config.local.php.example jako config.local.php i uzupełnij dane skrzynki (na pierwszym wdrożeniu patrycjakuczma.pl — szczegóły w WDROZENIE.txt).</p>
+            <button type="submit" class="btn btn--primary btn--block" id="form-submit" data-label-send="Wyślij zapytanie o bezpłatną wycenę" data-label-sending="Wysyłanie…">Wyślij zapytanie o bezpłatną wycenę</button>
+            <p class="form-note">Wysyłając formularz potwierdzasz zapoznanie się z polityką prywatności i zasadami kontaktu handlowego. Wysyłka przez SMTP seohost.pl (PHPMailer): na serwerze skopiuj <strong>config.local.php.example</strong> jako <strong>config.local.php</strong> i uzupełnij dane skrzynki. Przy wdrożeniu z repozytorium: <strong>npm run build</strong>, potem wgraj cały katalog <strong>dist/</strong> — opis w WDROZENIE.txt.</p>
           </form>
         </div>
       </div>
@@ -567,7 +584,7 @@
   <footer class="footer">
     <div class="container footer-grid">
       <div>
-        <div class="brand brand--footer" style="margin-bottom: var(--space-4); text-decoration: none; cursor: default;">
+        <div class="brand brand--footer">
           <svg class="brand-mark" viewBox="0 0 48 48" aria-hidden="true">
             <rect class="logo-fill-red" x="4" y="28" width="40" height="12" rx="2"/>
             <rect class="logo-fill-black" x="10" y="16" width="28" height="10" rx="2"/>
@@ -575,7 +592,7 @@
           </svg>
           <span class="brand-name"><span class="brand-name__red">Zet</span><span class="brand-name__black">-Bud</span><span class="brand-legal"> Sp. z o.o.</span></span>
         </div>
-        <p style="font-size:0.9375rem; color: var(--text-muted); margin:0;">Generalny wykonawca i firma budowlana: remonty i wykończenia, budowa domów, usługi budowlane dla inwestorów prywatnych i biznesowych.</p>
+        <p class="footer-lead">Generalny wykonawca i firma budowlana: remonty i wykończenia, budowa domów, usługi budowlane dla inwestorów prywatnych i biznesowych.</p>
       </div>
 
       <div>

@@ -1,6 +1,15 @@
 Strona Zet-Bud — wdrożenie na serwer
 =====================================
 
+BUILD (jeden katalog na hosting — bez wybierania plików)
+---------------------------------------------------------
+1. W katalogu projektu uruchom: **npm run build**
+2. Powstanie folder **dist/** z kompletem plików do wgrania.
+3. Wgraj **całą zawartość dist/** do katalogu WWW (np. public_html) — FTP, panel plików lub zip.
+4. Na serwerze utwórz **config.local.php** (skopiuj z **config.local.php.example** i uzupełnij SMTP). Ten plik nie trafia do dist z hasłem — dodajesz go tylko na hostingu.
+
+Wymagania: Node.js (dowolna aktualna LTS). Nie instaluje zewnętrznych paczek — tylko wbudowany skrypt.
+
 Hosting: seohost.pl (jak w projekcie AdwokatKuczma).
 
 PIERWSZE WDROŻENIE (patrycjakuczma.pl)
@@ -17,12 +26,12 @@ PIERWSZE WDROŻENIE (patrycjakuczma.pl)
 5. Po przeniesieniu strony na **zet-bud.pl** zmień HELO, skrzynkę SMTP i **ZETBUD_MAIL_TO** na docelowe wartości
    (szablon w **config.local.php.example**).
 
-Struktura katalogów (wgraj całość do katalogu WWW, np. public_html):
+Struktura w **dist/** (po `npm run build`) — wgrywasz całość do katalogu WWW, np. public_html:
 
   index.html          — strona główna
   contact.php         — obsługa formularza (PHP + PHPMailer)
-  config.local.php    — konfiguracja (NIE z repozytorium — utwórz na serwerze)
-  lib/PHPMailer/      — biblioteka PHPMailer (dołączona do repozytorium)
+  config.local.php    — konfiguracja (NIE z builda — utwórz na serwerze z przykładu)
+  lib/PHPMailer/      — biblioteka PHPMailer
   robots.txt, sitemap.xml
   assets/css/styles.css
   assets/js/main.js
