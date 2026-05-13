@@ -47,7 +47,7 @@ function zetbud_build_bodies(
     string $message,
     string $ip,
 ): array {
-    $plain = "Nowe zapytanie z formularza zet-bud.pl\r\n\r\n";
+    $plain = "Nowe zapytanie o budowę domu — formularz zet-bud.pl\r\n\r\n";
     $plain .= "Imię / firma: {$safeName}\r\n";
     $plain .= "Telefon: {$phone}\r\n";
     $plain .= "E-mail: {$email}\r\n";

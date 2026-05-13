@@ -15,6 +15,7 @@ var FILES = [
   'contact.php',
   'robots.txt',
   'sitemap.xml',
+  'site.webmanifest',
   'config.local.php.example',
   'WDROZENIE.txt',
 ];

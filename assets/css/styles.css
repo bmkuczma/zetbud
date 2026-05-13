@@ -177,6 +177,26 @@ a:hover { color: var(--accent-hover); }
   color: var(--accent);
 }
 
+.btn--lg {
+  min-height: 48px;
+  padding-inline: var(--space-7);
+  font-size: 1rem;
+}
+
+.hero-microcopy {
+  margin: 0 0 var(--space-6);
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.section-cta--split {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
 .site-header {
   position: sticky;
   top: 0;
@@ -267,28 +287,59 @@ body.has-menu-open {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
   text-decoration: none;
   color: inherit;
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 1.125rem;
-  letter-spacing: -0.03em;
+  line-height: 0;
 }
-.brand-mark {
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-}
-.brand-mark .logo-fill-red { fill: var(--logo-red); }
-.brand-mark .logo-fill-black { fill: var(--logo-black); }
-.brand-mark .logo-stroke-black { stroke: var(--logo-black); }
 
-.brand-name__red { color: var(--logo-red); }
-.brand-name__black { color: var(--logo-black); }
-.brand-legal {
-  color: var(--text-muted);
+.brand-lockup {
+  display: inline-block;
+  background: #0a0a0a;
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-logo {
+  display: block;
+  height: clamp(2rem, 5.2vw, 2.75rem);
+  width: auto;
+  max-width: min(148px, 38vw);
+}
+
+@media (min-width: 900px) {
+  .brand-logo {
+    height: 2.75rem;
+    max-width: 168px;
+  }
+}
+
+.brand--footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  text-decoration: none;
+  cursor: default;
+  pointer-events: none;
+}
+
+.brand-lockup--footer {
+  padding: var(--space-2) var(--space-4);
+}
+
+.brand-logo--footer {
+  height: clamp(2.125rem, 5vw, 2.5rem);
+  max-width: 200px;
+}
+
+.brand-legal-inline {
+  font-size: 0.75rem;
   font-weight: 600;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
 }
 
 .nav-desktop {
@@ -424,7 +475,7 @@ body.has-menu-open {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-3);
-  margin: var(--space-6) 0 var(--space-8);
+  margin: var(--space-6) 0 var(--space-4);
 }
 
 .trust-bar {
@@ -1019,13 +1070,6 @@ textarea {
   font-size: 0.9375rem;
 }
 .footer a:hover { color: var(--accent); }
-
-.brand--footer {
-  margin-bottom: var(--space-4);
-  text-decoration: none;
-  cursor: default;
-  pointer-events: none;
-}
 
 .footer-lead {
   font-size: 0.9375rem;

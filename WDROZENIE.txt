@@ -12,6 +12,8 @@ Wymagania: Node.js (dowolna aktualna LTS). Nie instaluje zewnętrznych paczek �
 
 Hosting: seohost.pl (jak w projekcie AdwokatKuczma).
 
+Treść serwisu (index.html) promuje głównie budowę domów jednorodzinnych — przy zmianie profilu firmy zaktualizuj teksty i JSON-LD ręcznie lub przez edycję źródeł przed `npm run build`.
+
 PIERWSZE WDROŻENIE (patrycjakuczma.pl)
 --------------------------------------
 1. Wgraj pliki do katalogu WWW domeny **patrycjakuczma.pl** (np. public_html).
