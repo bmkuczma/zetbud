@@ -2,6 +2,15 @@
   "name": "zetbud-site",
   "private": true,
   "scripts": {
-    "build": "node scripts/build.js"
+    "build": "node scripts/build.js",
+    "test": "node scripts/run-tests.cjs",
+    "test:php": "php tests/php/phone_validator_test.php",
+    "test:unit": "npm run test:node",
+    "test:e2e": "npx playwright test",
+    "test:node": "node --test tests/node/phone-sync.test.cjs",
+    "test:quick": "npm run test:php && npm run test:node"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0"
   }
 }

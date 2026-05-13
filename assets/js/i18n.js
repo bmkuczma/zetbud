@@ -26,22 +26,21 @@
     mobileCtaRegion: 'Quick contact',
     phoneLink: '+48 601 234 567',
 
-    metaTitle: 'Single & multi-family homes, electrical, earthworks, fit-out | Zet-Bud — Pomerania',
+    metaTitle: 'Zet-Bud | Homes, electrical, earthworks, renovations — Pomerania',
     metaDesc:
-      'Zet-Bud — Kartuzy, Kłosowo, Tri-City area: new homes (single & multi-family), electrical installations, earthworks, renovations and high-end interiors. Call or use the form — free quote, usually within one business day.',
-    metaKeywords:
-      'single-family home construction Kartuzy, multi-family builder Pomerania, electrical contractor Tri-City, earthworks Kartuzy, renovation fit-out Gdansk, Zet-Bud',
-    ogTitle: 'Homes, electrical, earthworks & interiors | Zet-Bud — Pomerania',
+      'Zet-Bud — Kłosowo, Kartuzy, Tri-City: new homes, electrical installations, earthworks, renovations and interiors. Free quote — reply usually within one business day.',
+    ogTitle: 'Zet-Bud | Homes, electrical, earthworks, renovations — Pomerania',
     ogDesc:
       'Construction company: residential new builds, electrical, site preparation, renovations and premium interiors. Kartuzy, Kłosowo, Tri-City. Free quote.',
     ogLocale: 'en_US',
+    ogLocaleAlternate: 'pl_PL',
     ogImageAlt: 'Construction site — Zet-Bud, Pomerania',
-    twTitle: 'Homes, electrical & earthworks | Zet-Bud',
+    twTitle: 'Zet-Bud | Homes, electrical, earthworks — Pomerania',
     twDesc: 'Pomerania & Tri-City: new builds, electrical, earthworks, renovations. Free quote — reply usually within 24 h.',
 
     heroEyebrow: 'One project lead · clear scope & schedule · Kartuzy, Tri-City & Pomerania',
     heroTitle:
-      '<span class="hero-title__brand">Zet-Bud</span><span class="hero-title__scope"><span class="hero-title__item">Single- &amp; multi-family construction</span><span class="hero-title__item">Electrical installations</span><span class="hero-title__item">Earthworks &amp; site preparation</span><span class="hero-title__item">Renovations &amp; interior fit-out</span></span><span class="hero-title__region">Kłosowo · Kartuzy · Tri-City · Pomerania</span>',
+      '<span class="hero-title__brand">Zet-Bud</span><span class="hero-title__scope"><span class="hero-title__item">Single- &amp; multi-family homes</span><span class="hero-title__item">Electrical installations</span><span class="hero-title__item">Earthworks</span><span class="hero-title__item">Renovations &amp; fit-out</span></span><span class="hero-title__region">Kłosowo · Kartuzy · Tri-City</span>',
     heroLead:
       'We focus on <strong>single- and multi-family residential projects</strong>, <strong>electrical installations</strong>, <strong>earthworks and site preparation</strong>, plus <strong>building renovations and premium interior fit-out</strong>. One point of contact, clear scope and schedule, quality supervision on site. Based in Kłosowo near Kartuzy — Kartuzy county, Tri-City and neighbouring municipalities.',
     heroCtaPrimary: 'Free project quote',
@@ -410,10 +409,10 @@
     }
     var metaIds = [
       'meta-desc',
-      'meta-keywords',
       'og-title',
       'og-desc',
       'og-locale',
+      'og-locale-alt',
       'og-img-alt',
       'tw-title',
       'tw-desc',
@@ -497,10 +496,10 @@
     if (isEn) {
       document.title = EN.metaTitle;
       setMeta('meta-desc', EN.metaDesc);
-      setMeta('meta-keywords', EN.metaKeywords);
       setMeta('og-title', EN.ogTitle);
       setMeta('og-desc', EN.ogDesc);
       setMeta('og-locale', EN.ogLocale);
+      setMeta('og-locale-alt', EN.ogLocaleAlternate);
       setMeta('og-img-alt', EN.ogImageAlt);
       setMeta('tw-title', EN.twTitle);
       setMeta('tw-desc', EN.twDesc);
@@ -632,7 +631,7 @@
         err: 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.',
         rate: 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.',
         errByWhy: {
-          mail: 'Wiadomość nie została wysłana z powodu problemu po stronie serwera poczty. Spróbuj ponownie za chwilę lub zadzwoń: +48 601 234 567. Na hostingu musi istnieć poprawny plik config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). W panelu sprawdź logi PHP (error_log) — tam trafia treść błędu SMTP. Przy błędach certyfikatu TLS można tymczasowo włączyć ZETBUD_SMTP_INSECURE w config (tylko diagnostyka).',
+          mail: 'Wiadomość nie została wysłana z powodu problemu po stronie serwera poczty. Spróbuj ponownie za chwilę lub zadzwoń: +48 601 234 567. Na hostingu musi istnieć poprawny plik config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). Port 465 = zwykle SSL (SMTPS), port 587 = STARTTLS — muszą do siebie pasować; możesz wymusić SMTP_ENCRYPTION (ssl lub tls) w config. W logach PHP (error_log) jest komunikat błędu SMTP; chwilowo możesz włączyć ZETBUD_SMTP_DEBUG lub ZETBUD_SMTP_INSECURE (tylko diagnostyka).',
           bad_name: 'Sprawdź pole z imieniem lub nazwą firmy (min. 2 znaki).',
           bad_phone: 'Telefon jest za krótki. Wpisz co najmniej 6 cyfr numeru krajowego (bez +48) albo wklej pełny numer — zostanie poprawiony automatycznie.',
           bad_email: 'Sprawdź poprawność adresu e-mail.',
@@ -646,7 +645,7 @@
         err: 'The form could not be sent. Check the fields or call +48 601 234 567.',
         rate: 'Please wait a moment before sending again.',
         errByWhy: {
-          mail: 'The message could not be sent due to a mail server issue. Please try again shortly or call +48 601 234 567. The host needs a valid config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). Check PHP error_log for the SMTP error message. For TLS certificate issues you can temporarily set ZETBUD_SMTP_INSECURE in config (diagnostics only).',
+          mail: 'The message could not be sent due to a mail server issue. Please try again shortly or call +48 601 234 567. The host needs a valid config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). Port 465 usually uses implicit SSL (SMTPS); port 587 uses STARTTLS — they must match; you can force SMTP_ENCRYPTION (ssl or tls) in config. Check PHP error_log for the SMTP error; temporarily enable ZETBUD_SMTP_DEBUG or ZETBUD_SMTP_INSECURE (diagnostics only).',
           bad_name: 'Please check the name / company field (min. 2 characters).',
           bad_phone: 'The phone number looks too short. Enter at least 6 national digits (without +48) or paste the full number — it will be normalized.',
           bad_email: 'Please check that your e-mail address is valid.',

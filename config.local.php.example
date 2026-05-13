@@ -17,6 +17,20 @@
 // define('ZETBUD_SMTP_HELO', 'zet-bud.pl');
 
 /**
+ * Szyfrowanie względem portu (contact.php ustawia PHPMailer):
+ * - Domyślnie: port **465** (lub 8465) → **ssl** (SMTPS, implicit TLS).
+ * - Inne porty (np. **587**, 25, 2525) → **tls** (STARTTLS po EHLO).
+ * Jeśli zmieniłeś tylko port i przestało działać, ustaw port jak w panelu albo wymuś tryb:
+ */
+// define('SMTP_ENCRYPTION', 'tls'); // np. gdy host wymaga STARTTLS na niestandardowym porcie
+// define('SMTP_ENCRYPTION', 'ssl'); // jawny SMTPS (zwykle z portem 465)
+
+/**
+ * Log rozmowy SMTP do error_log (tymczasowo, do diagnozy).
+ */
+// define('ZETBUD_SMTP_DEBUG', true);
+
+/**
  * Tylko diagnostyka TLS (stary serwer / łańcuch certyfikatów).
  * Wyłącz po naprawie — osłabia weryfikację SSL.
  */

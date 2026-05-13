@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Zet-Bud">
+  <rect width="32" height="32" fill="#000"/>
+  <path fill="#c00000" d="M16 4 L10 17 L22 17 Z M4 28 L16 28 L10 17 Z M28 28 L16 28 L22 17 Z"/>
+</svg>

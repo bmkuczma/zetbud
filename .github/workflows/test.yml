@@ -1,0 +1,32 @@
+name: Testy
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: openssl
+
+      - name: Zależności Node
+        run: npm ci
+
+      - name: Playwright (Chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Testy (PHP + Node + E2E)
+        run: npm test

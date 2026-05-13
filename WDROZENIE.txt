@@ -12,7 +12,9 @@ Wymagania: Node.js (dowolna aktualna LTS). Nie instaluje zewnętrznych paczek �
 
 Hosting: seohost.pl (jak w projekcie AdwokatKuczma).
 
-Treść serwisu (index.html) promuje głównie budowę domów jednorodzinnych — przy zmianie profilu firmy zaktualizuj teksty i JSON-LD ręcznie lub przez edycję źródeł przed `npm run build`.
+Treść serwisu (index.html) — m.in. budowa domów jedno- i wielorodzinnych; przy zmianie profilu firmy zaktualizuj teksty i JSON-LD ręcznie lub przez edycję źródeł przed `npm run build`.
+
+Testy lokalne (w tym PHP w PATH): **tests/README.md**.
 
 PIERWSZE WDROŻENIE (patrycjakuczma.pl)
 --------------------------------------
@@ -45,14 +47,16 @@ WYSYŁKA E-MAIL (SMTP seohost.pl)
 2. W danych poczty znajdziesz serwer SMTP — często **serverXXX.seohost.pl** lub **hXX.seohost.pl**
    (w innym projekcie używany był np. **h67.seohost.pl** — u Ciebie może być inny host z panelu).
 3. Skopiuj **config.local.php.example** → **config.local.php** i uzupełnij:
-   - SMTP_HOST, SMTP_PORT (zwykle **465** z szyfrowaniem SSL),
+   - SMTP_HOST, SMTP_PORT:
+     **465** = połączenie od razu przez SSL (SMTPS); **587** = najpierw jawne TCP, potem **STARTTLS** (inny tryb w PHPMailer).
+     Jeśli po zmianie portu poczta nie wychodzi, dopasuj parę: albo wróć do 465, albo 587 — albo wymuś **define('SMTP_ENCRYPTION', 'ssl');** lub **'tls';** (patrz config.local.php.example).
    - SMTP_USER = pełny adres skrzynki,
    - SMTP_PASSWORD (nie zostawiaj placeholdera „TU_WSTAW…”),
    - SMTP_FROM (najczęściej ten sam co SMTP_USER),
    - SMTP_FROM_NAME, ZETBUD_MAIL_TO (odbiorca zgłoszeń),
    - ZETBUD_SMTP_HELO = domena strony (**patrycjakuczma.pl** na stagingu, potem **zet-bud.pl**).
 4. Wgraj na serwer cały katalog **lib/PHPMailer** (contact.php ładuje pliki z lib/PHPMailer/src/).
-5. Jeśli SMTP nie działa, sprawdź logi błędów PHP na hostingu; contact.php zapisuje błąd SMTP przez error_log (z klasą wyjątku). Przy błędach TLS możesz **tymczasowo** ustawić w config.local.php **ZETBUD_SMTP_INSECURE** (patrz przykład) — tylko do diagnozy, potem wyłącz.
+5. Jeśli SMTP nie działa, sprawdź logi błędów PHP na hostingu; contact.php zapisuje błąd SMTP przez error_log (host, port, komunikat). **ZETBUD_SMTP_DEBUG** (true) zapisuje rozmowę SMTP do logu — tylko chwilowo na diagnozę. Przy błędach TLS możesz **tymczasowo** ustawić **ZETBUD_SMTP_INSECURE** (patrz przykład) — tylko do diagnozy, potem wyłącz.
 6. Fallback **mail()**: contact.php dodaje parametr **-f** (nadawca koperty), często wymagany na hostingu; jeśli nadal false, sprawdź czy hosting nie blokuje wychodzącej poczty.
 
 Fallback: gdy w config.local.php **nie** zdefiniujesz SMTP_HOST / SMTP_USER / SMTP_PASSWORD,
@@ -62,6 +66,7 @@ FORMULARZ
 ---------
 - Wymaga PHP z rozszerzeniem openssl (dla SMTP przez TLS).
 - Pole honeypot w HTML: zetbud_hp (nie wypełniać; jeśli niepuste, skrypt kończy bez wysyłki).
+- Testy automatyczne (m.in. formularz E2E): `npm test` — szczegóły w **tests/README.md**.
 
 ZDJĘCIA
 -------

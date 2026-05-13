@@ -317,53 +317,140 @@
 
   initPhoneComposer();
 
+  function applyContactFormFeedback(wycena, why) {
+    var fb = document.getElementById('form-feedback');
+    if (!fb) return false;
+    var wf = window.ZETBUD_FORM_FEEDBACK;
+    var isEn = document.documentElement.getAttribute('lang') === 'en';
+    var pack = wf && wf[isEn ? 'en' : 'pl'];
+    var okMsg = pack ? pack.ok : 'Dziękujemy za wiadomość. Odezwiemy się możliwie szybko, zwykle w ciągu jednego dnia roboczego.';
+    var errMsg = pack ? pack.err : 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.';
+    var rateMsg = pack ? pack.rate : 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.';
+    var whyClean = (why || '').replace(/[^a-z_]/gi, '');
+    var errDetail =
+      pack && pack.errByWhy && whyClean && pack.errByWhy[whyClean] ? pack.errByWhy[whyClean] : '';
+    var motion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+    fb.hidden = false;
+    fb.removeAttribute('tabindex');
+
+    if (wycena === '1') {
+      fb.className = 'form-alert form-alert--ok';
+      fb.textContent = okMsg;
+      fb.setAttribute('tabindex', '-1');
+      try {
+        fb.focus();
+      } catch (err) {}
+      fb.scrollIntoView({ behavior: motion, block: 'nearest' });
+      return true;
+    }
+    if (wycena === 'rate') {
+      fb.className = 'form-alert form-alert--warn';
+      fb.textContent = rateMsg;
+      fb.setAttribute('tabindex', '-1');
+      try {
+        fb.focus();
+      } catch (err2) {}
+      fb.scrollIntoView({ behavior: motion, block: 'nearest' });
+      return false;
+    }
+    if (wycena === '0') {
+      fb.className = 'form-alert form-alert--warn';
+      fb.textContent = errDetail || errMsg;
+      fb.setAttribute('tabindex', '-1');
+      try {
+        fb.focus();
+      } catch (err3) {}
+      fb.scrollIntoView({ behavior: motion, block: 'nearest' });
+      return false;
+    }
+    fb.className = 'form-alert form-alert--warn';
+    fb.textContent = errMsg;
+    fb.setAttribute('tabindex', '-1');
+    try {
+      fb.focus();
+    } catch (err4) {}
+    fb.scrollIntoView({ behavior: motion, block: 'nearest' });
+    return false;
+  }
+
   var form = document.getElementById('quote-form');
   if (form) {
     form.addEventListener('submit', function (e) {
+      if (!window.fetch || !window.FormData) return;
+      e.preventDefault();
       syncPhoneBeforeSubmit();
-      if (!form.reportValidity()) {
-        e.preventDefault();
-        return;
-      }
+      if (!form.reportValidity()) return;
       var btn = document.getElementById('form-submit');
       if (!btn) return;
       var sendLabel = btn.getAttribute('data-label-send') || btn.textContent;
       var sendingLabel = btn.getAttribute('data-label-sending') || 'Wysyłanie…';
+      var isEn = document.documentElement.getAttribute('lang') === 'en';
+
       btn.textContent = sendingLabel;
       btn.setAttribute('aria-busy', 'true');
-      window.setTimeout(function () {
-        if (btn.getAttribute('aria-busy') === 'true') {
+      btn.disabled = true;
+
+      var actionUrl = new URL(form.getAttribute('action') || 'contact.php', window.location.href).href;
+
+      fetch(actionUrl, {
+        method: 'POST',
+        body: new FormData(form),
+        credentials: 'same-origin',
+        redirect: 'follow',
+      })
+        .then(function (res) {
+          if (res.redirected) {
+            var u = new URL(res.url, window.location.href);
+            var wycena = u.searchParams.get('wycena');
+            var why = u.searchParams.get('why') || '';
+            if (wycena === '1') {
+              if (applyContactFormFeedback('1', why)) {
+                form.reset();
+                syncPhoneBeforeSubmit();
+              }
+            } else if (wycena === '0' || wycena === 'rate') {
+              applyContactFormFeedback(wycena, why);
+            } else {
+              applyContactFormFeedback('0', 'mail');
+            }
+            return;
+          }
+          if (res.ok) {
+            applyContactFormFeedback('0', '');
+            return;
+          }
+          applyContactFormFeedback('0', 'mail');
+        })
+        .catch(function () {
+          var fb = document.getElementById('form-feedback');
+          var netMsg = isEn
+            ? 'Could not reach the server. Your entries are kept — try again in a moment.'
+            : 'Brak połączenia z serwerem. Wpisane dane zostały zachowane — spróbuj ponownie za chwilę.';
+          if (fb) {
+            fb.hidden = false;
+            fb.className = 'form-alert form-alert--warn';
+            fb.textContent = netMsg;
+            fb.setAttribute('tabindex', '-1');
+            try {
+              fb.focus();
+            } catch (err) {}
+            var motion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+            fb.scrollIntoView({ behavior: motion, block: 'nearest' });
+          }
+        })
+        .finally(function () {
           btn.textContent = sendLabel;
           btn.removeAttribute('aria-busy');
-        }
-      }, 12000);
+          btn.disabled = false;
+        });
     });
   }
 
   var params = new URLSearchParams(window.location.search);
-  var fb = document.getElementById('form-feedback');
-  var wycena = params.get('wycena');
-  if (fb && wycena) {
-    fb.hidden = false;
-    var pack =
-      window.ZETBUD_FORM_FEEDBACK &&
-      window.ZETBUD_FORM_FEEDBACK[window.ZETBUD_FORM_FEEDBACK.lang === 'en' ? 'en' : 'pl'];
-    var okMsg = pack ? pack.ok : 'Dziękujemy za wiadomość. Odezwiemy się możliwie szybko, zwykle w ciągu jednego dnia roboczego.';
-    var errMsg = pack ? pack.err : 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.';
-    var rateMsg = pack ? pack.rate : 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.';
-    var why = (params.get('why') || '').replace(/[^a-z_]/gi, '');
-    var errDetail =
-      pack && pack.errByWhy && why && pack.errByWhy[why] ? pack.errByWhy[why] : '';
-    if (wycena === '1') {
-      fb.className = 'form-alert form-alert--ok';
-      fb.textContent = okMsg;
-    } else if (wycena === '0') {
-      fb.className = 'form-alert form-alert--err';
-      fb.textContent = errDetail || errMsg;
-    } else if (wycena === 'rate') {
-      fb.className = 'form-alert form-alert--err';
-      fb.textContent = rateMsg;
-    }
+  var wycenaParam = params.get('wycena');
+  if (wycenaParam) {
+    applyContactFormFeedback(wycenaParam, params.get('why') || '');
     if (window.history && window.history.replaceState) {
       var sp = new URLSearchParams(window.location.search);
       sp.delete('wycena');
@@ -372,10 +459,10 @@
       if (tail) tail = '?' + tail;
       window.history.replaceState(null, '', window.location.pathname + tail + window.location.hash);
     }
-    fb.scrollIntoView({
-      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
-      block: 'nearest',
-    });
+    if (wycenaParam === '1' && form) {
+      form.reset();
+      syncPhoneBeforeSubmit();
+    }
   }
 
   function initScrollReveals() {
