@@ -398,6 +398,46 @@ body.has-menu-open {
 }
 .icon-btn:hover { background: var(--bg-elevated); }
 
+.lang-switch {
+  display: inline-flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.lang-switch__btn {
+  padding: 0.4rem 0.55rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text-muted);
+  line-height: 1.2;
+}
+.lang-switch__btn:hover {
+  color: var(--text);
+  background: var(--bg-elevated);
+}
+.lang-switch__btn[aria-pressed="true"] {
+  background: var(--accent);
+  color: #fff;
+}
+.lang-switch__btn[aria-pressed="true"]:hover {
+  color: #fff;
+  background: var(--accent-hover);
+}
+.lang-switch--stack {
+  width: 100%;
+  margin-top: var(--space-2);
+}
+.lang-switch--stack .lang-switch__btn {
+  flex: 1;
+  text-align: center;
+  padding-block: 0.55rem;
+}
+
 .menu-toggle {
   min-width: 44px;
   min-height: 44px;
@@ -863,6 +903,11 @@ blockquote footer strong { color: var(--text); }
   flex-shrink: 0;
   transition: transform 0.25s var(--ease-out);
 }
+.faq-trigger > span {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+}
 .faq-item.is-open .faq-trigger svg { transform: rotate(180deg); }
 
 .faq-panel {
@@ -958,6 +1003,55 @@ blockquote footer strong { color: var(--text); }
 }
 
 form .field { margin-bottom: var(--space-4); }
+
+.field--phone .phone-composer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.field--phone .phone-country {
+  width: auto;
+  flex: 0 1 10rem;
+  min-width: 7rem;
+  padding-inline: var(--space-3);
+}
+
+.field--phone .phone-national-cell {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex: 1 1 14rem;
+  min-width: 0;
+}
+
+.field--phone .phone-national {
+  width: auto;
+  flex: 1 1 8rem;
+  min-width: 7rem;
+}
+
+.field--phone .phone-format-hint {
+  flex: 0 0 auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  white-space: nowrap;
+  user-select: none;
+  opacity: 0.88;
+}
+
+@media (max-width: 520px) {
+  .field--phone .phone-national-cell {
+    flex-basis: 100%;
+  }
+  .field--phone .phone-format-hint {
+    margin-left: auto;
+  }
+}
+
 label {
   display: block;
   font-size: 0.8125rem;

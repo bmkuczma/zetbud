@@ -1,9 +1,14 @@
 (function () {
   'use strict';
 
+  function zetbudMenuLabel(pl, en) {
+    return document.documentElement.getAttribute('lang') === 'en' ? en : pl;
+  }
+
   var root = document.documentElement;
   var storageKey = 'zet-bud-theme';
   var header = document.querySelector('.site-header');
+  var syncPhoneBeforeSubmit = function () {};
 
   function getPreferred() {
     return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -142,7 +147,12 @@
     menu.classList.toggle('is-open', open);
     menu.hidden = !open;
     menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    menuBtn.setAttribute('aria-label', open ? 'Zamknij menu nawigacji' : 'Otwórz menu nawigacji');
+    menuBtn.setAttribute(
+      'aria-label',
+      open
+        ? zetbudMenuLabel('Zamknij menu nawigacji', 'Close navigation menu')
+        : zetbudMenuLabel('Otwórz menu nawigacji', 'Open navigation menu')
+    );
     if (header) header.classList.toggle('menu-open', open);
     document.body.classList.toggle('has-menu-open', open);
     if (overlay) {
@@ -188,7 +198,7 @@
     );
   }
 
-  var sectionIds = ['uslugi', 'dlaczego-my', 'realizacje', 'dojazd', 'faq', 'kontakt'];
+  var sectionIds = ['uslugi', 'dlaczego-my', 'realizacje', 'obszar', 'dojazd', 'faq', 'kontakt'];
   var navLinks = document.querySelectorAll('[data-nav-section]');
 
   function updateActiveNav() {
@@ -237,9 +247,60 @@
     });
   });
 
+  function initPhoneComposer() {
+    var country = document.getElementById('phone-country');
+    var national = document.getElementById('phone-national');
+    var hidden = document.getElementById('phone');
+    var hint = document.getElementById('phone-format-hint');
+    if (!country || !national || !hidden || !hint) return;
+
+    function shortNumMsg() {
+      return document.documentElement.getAttribute('lang') === 'en'
+        ? 'Enter at least 6 digits (without country code).'
+        : 'Wpisz min. 6 cyfr numeru (bez kodu kraju).';
+    }
+
+    function getMeta() {
+      var opt = country.options[country.selectedIndex];
+      var max = parseInt(opt.getAttribute('data-national-max') || '15', 10);
+      if (isNaN(max) || max < 6) max = 15;
+      if (max > 15) max = 15;
+      return {
+        max: max,
+        mask: opt.getAttribute('data-mask') || '_______________',
+      };
+    }
+
+    function syncPhone() {
+      var meta = getMeta();
+      national.setAttribute('maxlength', String(meta.max));
+      hint.textContent = meta.mask;
+      var d = national.value.replace(/\D/g, '').slice(0, meta.max);
+      national.value = d;
+      if (d.length > 0 && d.length < 6) {
+        national.setCustomValidity(shortNumMsg());
+        hidden.value = '';
+      } else {
+        national.setCustomValidity('');
+        hidden.value = d.length >= 6 ? country.value + ' ' + d : '';
+      }
+    }
+
+    country.addEventListener('change', function () {
+      national.value = '';
+      syncPhone();
+    });
+    national.addEventListener('input', syncPhone);
+    syncPhoneBeforeSubmit = syncPhone;
+    syncPhone();
+  }
+
+  initPhoneComposer();
+
   var form = document.getElementById('quote-form');
   if (form) {
     form.addEventListener('submit', function (e) {
+      syncPhoneBeforeSubmit();
       if (!form.reportValidity()) {
         e.preventDefault();
         return;
@@ -264,20 +325,28 @@
   var wycena = params.get('wycena');
   if (fb && wycena) {
     fb.hidden = false;
+    var pack =
+      window.ZETBUD_FORM_FEEDBACK &&
+      window.ZETBUD_FORM_FEEDBACK[window.ZETBUD_FORM_FEEDBACK.lang === 'en' ? 'en' : 'pl'];
+    var okMsg = pack ? pack.ok : 'Dziękujemy za wiadomość. Odezwiemy się możliwie szybko, zwykle w ciągu jednego dnia roboczego.';
+    var errMsg = pack ? pack.err : 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.';
+    var rateMsg = pack ? pack.rate : 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.';
     if (wycena === '1') {
       fb.className = 'form-alert form-alert--ok';
-      fb.textContent =
-        'Dziękujemy za wiadomość. Odezwiemy się możliwie szybko, zwykle w ciągu jednego dnia roboczego.';
+      fb.textContent = okMsg;
     } else if (wycena === '0') {
       fb.className = 'form-alert form-alert--err';
-      fb.textContent =
-        'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.';
+      fb.textContent = errMsg;
     } else if (wycena === 'rate') {
       fb.className = 'form-alert form-alert--err';
-      fb.textContent = 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.';
+      fb.textContent = rateMsg;
     }
     if (window.history && window.history.replaceState) {
-      window.history.replaceState(null, '', window.location.pathname + window.location.hash);
+      var sp = new URLSearchParams(window.location.search);
+      sp.delete('wycena');
+      var tail = sp.toString();
+      if (tail) tail = '?' + tail;
+      window.history.replaceState(null, '', window.location.pathname + tail + window.location.hash);
     }
     fb.scrollIntoView({
       behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',

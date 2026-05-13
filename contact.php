@@ -20,6 +20,26 @@ function zetbud_redirect(string $query): void
     exit;
 }
 
+/** @return 'pl'|'en' */
+function zetbud_form_lang(): string
+{
+    $f = $_POST['form_lang'] ?? '';
+    return $f === 'en' ? 'en' : 'pl';
+}
+
+/** @return array<string, string> topic code => Polish label (e-mail) */
+function zetbud_topic_labels(): array
+{
+    return [
+        't1' => 'Budowa domu jedno- lub wielorodzinnego — od podstaw',
+        't2' => 'Instalacje elektryczne',
+        't3' => 'Prace ziemne i przygotowanie placu',
+        't4' => 'Remonty i wykończenia wnętrz (wysoki standard)',
+        't5' => 'Zagospodarowanie działki / otoczenie budynku',
+        't6' => 'Inne — doprecyzuję w wiadomości',
+    ];
+}
+
 function zetbud_load_phpmailer(): void
 {
     static $loaded = false;
@@ -46,8 +66,10 @@ function zetbud_build_bodies(
     string $topicLine,
     string $message,
     string $ip,
+    string $formLang,
 ): array {
-    $plain = "Nowe zapytanie o budowę domu — formularz zet-bud.pl\r\n\r\n";
+    $plain = "Nowe zapytanie — formularz zet-bud.pl\r\n\r\n";
+    $plain .= 'Język formularza / Form language: ' . $formLang . "\r\n\r\n";
     $plain .= "Imię / firma: {$safeName}\r\n";
     $plain .= "Telefon: {$phone}\r\n";
     $plain .= "E-mail: {$email}\r\n";
@@ -72,6 +94,7 @@ function zetbud_build_bodies(
     $html .= '<tr><td style="padding:6px 0;color:#475569;">Telefon</td><td style="padding:6px 0;">' . $esc($phone) . '</td></tr>';
     $html .= '<tr><td style="padding:6px 0;color:#475569;">E-mail</td><td style="padding:6px 0;"><a href="mailto:' . $esc($email) . '">' . $esc($email) . '</a></td></tr>';
     $html .= '<tr><td style="padding:6px 0;color:#475569;">Typ inwestycji</td><td style="padding:6px 0;">' . $esc($topicLine) . '</td></tr>';
+    $html .= '<tr><td style="padding:6px 0;color:#475569;">Język / language</td><td style="padding:6px 0;">' . $esc($formLang) . '</td></tr>';
     $html .= '</table>';
     $html .= '<p style="margin:20px 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:0.06em;color:#475569;">Treść</p>';
     $html .= '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:16px;">' . $nl($message) . '</div>';
@@ -165,6 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     zetbud_redirect('wycena=0');
 }
 
+$formLang = zetbud_form_lang();
+
 if (!empty($_POST['company_website'])) {
     http_response_code(200);
     exit;
@@ -180,13 +205,12 @@ if (defined('ZETBUD_MAIL_TO') && is_string(ZETBUD_MAIL_TO) && ZETBUD_MAIL_TO !==
 
 $now = time();
 if (!empty($_SESSION['zet_bud_last_send']) && ($now - (int) $_SESSION['zet_bud_last_send']) < 50) {
-    zetbud_redirect('wycena=rate');
+    zetbud_redirect('wycena=rate&lang=' . $formLang);
 }
 
 $name = trim((string) ($_POST['name'] ?? ''));
 $phone = trim((string) ($_POST['phone'] ?? ''));
 $email = trim((string) ($_POST['email'] ?? ''));
-$topic = trim((string) ($_POST['topic'] ?? ''));
 $message = trim((string) ($_POST['message'] ?? ''));
 
 $len = static function (string $s): int {
@@ -194,26 +218,29 @@ $len = static function (string $s): int {
 };
 
 if ($len($name) < 2 || $len($name) > 220) {
-    zetbud_redirect('wycena=0');
+    zetbud_redirect('wycena=0&lang=' . $formLang);
 }
 if ($len($phone) < 6 || $len($phone) > 40) {
-    zetbud_redirect('wycena=0');
+    zetbud_redirect('wycena=0&lang=' . $formLang);
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    zetbud_redirect('wycena=0');
+    zetbud_redirect('wycena=0&lang=' . $formLang);
 }
-if ($topic === '' || $len($topic) > 80) {
-    zetbud_redirect('wycena=0');
+
+$topicLabels = zetbud_topic_labels();
+$topicCode = trim((string) ($_POST['topic'] ?? ''));
+if ($topicCode === '' || !isset($topicLabels[$topicCode])) {
+    zetbud_redirect('wycena=0&lang=' . $formLang);
 }
 if ($len($message) < 10 || $len($message) > 8000) {
-    zetbud_redirect('wycena=0');
+    zetbud_redirect('wycena=0&lang=' . $formLang);
 }
 
 $safeName = preg_replace('/[^\p{L}\p{N}\s\-\.\'\"]/u', '', $name) ?? $name;
-$topicLine = str_replace(["\r", "\n"], ' ', $topic);
+$topicLine = $topicLabels[$topicCode];
 $ip = (string) ($_SERVER['REMOTE_ADDR'] ?? '');
 
-[$plainBody, $htmlBody] = zetbud_build_bodies($safeName, $phone, $email, $topicLine, $message, $ip);
+[$plainBody, $htmlBody] = zetbud_build_bodies($safeName, $phone, $email, $topicLine, $message, $ip, $formLang);
 
 $sent = false;
 $smtpConfigured = defined('SMTP_HOST') && defined('SMTP_USER') && defined('SMTP_PASSWORD')
@@ -246,7 +273,7 @@ if (!$sent) {
 $_SESSION['zet_bud_last_send'] = $now;
 
 if ($sent) {
-    zetbud_redirect('wycena=1');
+    zetbud_redirect('wycena=1&lang=' . $formLang);
 }
 
-zetbud_redirect('wycena=0');
+zetbud_redirect('wycena=0&lang=' . $formLang);
