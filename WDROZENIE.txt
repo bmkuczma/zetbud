@@ -60,7 +60,7 @@ skrypt spróbuje wysłać wiadomość przez funkcję mail() (często zablokowan�
 FORMULARZ
 ---------
 - Wymaga PHP z rozszerzeniem openssl (dla SMTP przez TLS).
-- Pole honeypot w HTML: company_website.
+- Pole honeypot w HTML: zetbud_hp (nie wypełniać; jeśli niepuste, skrypt kończy bez wysyłki).
 
 ZDJĘCIA
 -------

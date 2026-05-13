@@ -627,11 +627,29 @@
         ok: 'Dziękujemy za wiadomość. Odezwiemy się możliwie szybko, zwykle w ciągu jednego dnia roboczego.',
         err: 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.',
         rate: 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.',
+        errByWhy: {
+          mail: 'Wiadomość nie została wysłana z powodu problemu po stronie serwera poczty. Spróbuj ponownie za chwilę lub zadzwoń: +48 601 234 567. Jeśli błąd się powtarza, hosting wymaga poprawnej konfiguracji SMTP (plik config.local.php).',
+          bad_name: 'Sprawdź pole z imieniem lub nazwą firmy (min. 2 znaki).',
+          bad_phone: 'Telefon jest za krótki. Wpisz co najmniej 6 cyfr numeru krajowego (bez +48) albo wklej pełny numer — zostanie poprawiony automatycznie.',
+          bad_email: 'Sprawdź poprawność adresu e-mail.',
+          bad_topic: 'Wybierz typ inwestycji z listy.',
+          bad_msg: 'Opis inwestycji powinien mieć co najmniej ok. 10 znaków.',
+          method: 'Formularz wymaga wysłania metodą POST. Otwórz stronę z adresu zet-bud.pl i spróbuj ponownie.',
+        },
       },
       en: {
         ok: 'Thank you. We will get back to you as soon as possible — usually within one business day.',
         err: 'The form could not be sent. Check the fields or call +48 601 234 567.',
         rate: 'Please wait a moment before sending again.',
+        errByWhy: {
+          mail: 'The message could not be sent due to a mail server issue. Please try again shortly or call +48 601 234 567. If this keeps happening, the host needs SMTP configured (config.local.php).',
+          bad_name: 'Please check the name / company field (min. 2 characters).',
+          bad_phone: 'The phone number looks too short. Enter at least 6 national digits (without +48) or paste the full number — it will be normalized.',
+          bad_email: 'Please check that your e-mail address is valid.',
+          bad_topic: 'Please choose a project type from the list.',
+          bad_msg: 'Please enter a slightly longer message (at least about 10 characters).',
+          method: 'This form must be submitted via POST from the live site. Please try again from zet-bud.pl.',
+        },
       },
     };
 

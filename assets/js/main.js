@@ -198,7 +198,7 @@
     );
   }
 
-  var sectionIds = ['uslugi', 'dlaczego-my', 'realizacje', 'obszar', 'dojazd', 'faq', 'kontakt'];
+  var sectionIds = ['uslugi', 'dojazd', 'kontakt'];
   var navLinks = document.querySelectorAll('[data-nav-section]');
 
   function updateActiveNav() {
@@ -275,7 +275,14 @@
       var meta = getMeta();
       national.setAttribute('maxlength', String(meta.max));
       hint.textContent = meta.mask;
-      var d = national.value.replace(/\D/g, '').slice(0, meta.max);
+      var raw = national.value.replace(/\D/g, '');
+      var ccDigits = country.value.replace(/\D/g, '');
+      if (ccDigits.length >= 2 && raw.indexOf(ccDigits) === 0 && raw.length > meta.max) {
+        raw = raw.slice(ccDigits.length);
+      } else if (country.value === '+1' && raw.length === 11 && raw.charAt(0) === '1') {
+        raw = raw.slice(1);
+      }
+      var d = raw.slice(0, meta.max);
       national.value = d;
       if (d.length > 0 && d.length < 6) {
         national.setCustomValidity(shortNumMsg());
@@ -331,12 +338,15 @@
     var okMsg = pack ? pack.ok : 'Dziękujemy za wiadomość. Odezwiemy się możliwie szybko, zwykle w ciągu jednego dnia roboczego.';
     var errMsg = pack ? pack.err : 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.';
     var rateMsg = pack ? pack.rate : 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.';
+    var why = (params.get('why') || '').replace(/[^a-z_]/gi, '');
+    var errDetail =
+      pack && pack.errByWhy && why && pack.errByWhy[why] ? pack.errByWhy[why] : '';
     if (wycena === '1') {
       fb.className = 'form-alert form-alert--ok';
       fb.textContent = okMsg;
     } else if (wycena === '0') {
       fb.className = 'form-alert form-alert--err';
-      fb.textContent = errMsg;
+      fb.textContent = errDetail || errMsg;
     } else if (wycena === 'rate') {
       fb.className = 'form-alert form-alert--err';
       fb.textContent = rateMsg;
@@ -344,6 +354,7 @@
     if (window.history && window.history.replaceState) {
       var sp = new URLSearchParams(window.location.search);
       sp.delete('wycena');
+      sp.delete('why');
       var tail = sp.toString();
       if (tail) tail = '?' + tail;
       window.history.replaceState(null, '', window.location.pathname + tail + window.location.hash);
@@ -353,6 +364,55 @@
       block: 'nearest',
     });
   }
+
+  function initScrollReveals() {
+    if (!window.matchMedia || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.body.classList.add('site-motion');
+    var sections = document.querySelectorAll('main > section:not(.hero)');
+    if (!sections.length) return;
+    sections.forEach(function (sec) {
+      sec.classList.add('awaiting-reveal');
+    });
+    function markInView(el) {
+      el.classList.add('in-view');
+      window.requestAnimationFrame(function () {
+        el.classList.remove('awaiting-reveal');
+      });
+    }
+    function flushVisible() {
+      sections.forEach(function (sec) {
+        if (sec.classList.contains('in-view')) return;
+        var r = sec.getBoundingClientRect();
+        var vh = window.innerHeight || document.documentElement.clientHeight;
+        if (r.top < vh * 0.92 && r.bottom > vh * 0.06) markInView(sec);
+      });
+    }
+    var raf = window.requestAnimationFrame || function (cb) {
+      return window.setTimeout(cb, 0);
+    };
+    raf(function () {
+      flushVisible();
+      if (!('IntersectionObserver' in window)) {
+        sections.forEach(markInView);
+        return;
+      }
+      var io = new IntersectionObserver(
+        function (entries) {
+          entries.forEach(function (entry) {
+            if (!entry.isIntersecting) return;
+            markInView(entry.target);
+            io.unobserve(entry.target);
+          });
+        },
+        { root: null, rootMargin: '0px 0px -7% 0px', threshold: 0.08 }
+      );
+      sections.forEach(function (sec) {
+        if (!sec.classList.contains('in-view')) io.observe(sec);
+      });
+    });
+  }
+
+  initScrollReveals();
 
   var y = document.getElementById('year');
   if (y) y.textContent = String(new Date().getFullYear());

@@ -185,12 +185,13 @@ function zetbud_send_via_mail(
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    zetbud_redirect('wycena=0');
+    zetbud_redirect('wycena=0&why=method');
 }
 
 $formLang = zetbud_form_lang();
 
-if (!empty($_POST['company_website'])) {
+/* Pole pułapka — unikaj nazw typu „website”, żeby menedżery haseł go nie uzupełniały. */
+if (!empty($_POST['zetbud_hp'])) {
     http_response_code(200);
     exit;
 }
@@ -218,22 +219,22 @@ $len = static function (string $s): int {
 };
 
 if ($len($name) < 2 || $len($name) > 220) {
-    zetbud_redirect('wycena=0&lang=' . $formLang);
+    zetbud_redirect('wycena=0&lang=' . $formLang . '&why=bad_name');
 }
 if ($len($phone) < 6 || $len($phone) > 40) {
-    zetbud_redirect('wycena=0&lang=' . $formLang);
+    zetbud_redirect('wycena=0&lang=' . $formLang . '&why=bad_phone');
 }
 if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    zetbud_redirect('wycena=0&lang=' . $formLang);
+    zetbud_redirect('wycena=0&lang=' . $formLang . '&why=bad_email');
 }
 
 $topicLabels = zetbud_topic_labels();
 $topicCode = trim((string) ($_POST['topic'] ?? ''));
 if ($topicCode === '' || !isset($topicLabels[$topicCode])) {
-    zetbud_redirect('wycena=0&lang=' . $formLang);
+    zetbud_redirect('wycena=0&lang=' . $formLang . '&why=bad_topic');
 }
 if ($len($message) < 10 || $len($message) > 8000) {
-    zetbud_redirect('wycena=0&lang=' . $formLang);
+    zetbud_redirect('wycena=0&lang=' . $formLang . '&why=bad_msg');
 }
 
 $safeName = preg_replace('/[^\p{L}\p{N}\s\-\.\'\"]/u', '', $name) ?? $name;
@@ -270,10 +271,9 @@ if (!$sent) {
     $sent = zetbud_send_via_mail($mailTo, $email, $subject, $plainBody, $fromHeader);
 }
 
-$_SESSION['zet_bud_last_send'] = $now;
-
 if ($sent) {
+    $_SESSION['zet_bud_last_send'] = $now;
     zetbud_redirect('wycena=1&lang=' . $formLang);
 }
 
-zetbud_redirect('wycena=0&lang=' . $formLang);
+zetbud_redirect('wycena=0&lang=' . $formLang . '&why=mail');
