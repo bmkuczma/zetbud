@@ -39,8 +39,9 @@
     twTitle: 'Homes, electrical & earthworks | Zet-Bud',
     twDesc: 'Pomerania & Tri-City: new builds, electrical, earthworks, renovations. Free quote — reply usually within 24 h.',
 
-    heroEyebrow: 'Single & multi-family homes · electrical · earthworks · renovations & interiors · Pomerania',
-    heroTitle: 'Zet-Bud — new homes, electrical, earthworks, and high-end renovations across Pomerania',
+    heroEyebrow: 'One project lead · clear scope & schedule · Kartuzy, Tri-City & Pomerania',
+    heroTitle:
+      '<span class="hero-title__brand">Zet-Bud</span><span class="hero-title__scope"><span class="hero-title__item">Single- &amp; multi-family construction</span><span class="hero-title__item">Electrical installations</span><span class="hero-title__item">Earthworks &amp; site preparation</span><span class="hero-title__item">Renovations &amp; interior fit-out</span></span><span class="hero-title__region">Kłosowo · Kartuzy · Tri-City · Pomerania</span>',
     heroLead:
       'We focus on <strong>single- and multi-family residential projects</strong>, <strong>electrical installations</strong>, <strong>earthworks and site preparation</strong>, plus <strong>building renovations and premium interior fit-out</strong>. One point of contact, clear scope and schedule, quality supervision on site. Based in Kłosowo near Kartuzy — Kartuzy county, Tri-City and neighbouring municipalities.',
     heroCtaPrimary: 'Free project quote',
