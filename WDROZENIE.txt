@@ -1,0 +1,65 @@
+Strona Zet-Bud — wdrożenie na serwer
+=====================================
+
+Hosting: seohost.pl (jak w projekcie AdwokatKuczma).
+
+PIERWSZE WDROŻENIE (patrycjakuczma.pl)
+--------------------------------------
+1. Wgraj pliki do katalogu WWW domeny **patrycjakuczma.pl** (np. public_html).
+2. W panelu seohost utwórz lub użyj skrzynki **baq@patrycjakuczma.pl** i hasła do SMTP.
+3. W **config.local.php** ustaw m.in.:
+   - **ZETBUD_MAIL_TO** = **bakuthegod@gmail.com** — tu trafiają zgłoszenia z formularza;
+   - **SMTP_USER** / **SMTP_FROM** = **baq@patrycjakuczma.pl** — logowanie do SMTP i nadawca (zgodność z SPF);
+   - **ZETBUD_SMTP_HELO** = **patrycjakuczma.pl**;
+   - **SMTP_HOST** — dokładny serwer z panelu dla tej domeny (nie musi być h67 — sprawdź w ustawieniach poczty).
+4. Przekierowanie skrzynki **baq@** na Gmail w panelu jest opcjonalne: formularz i tak wysyła kopię
+   bezpośrednio na adres z **ZETBUD_MAIL_TO**. Przekierowanie ma sens na zwykłą pocztę przychodzącą na baq@.
+5. Po przeniesieniu strony na **zet-bud.pl** zmień HELO, skrzynkę SMTP i **ZETBUD_MAIL_TO** na docelowe wartości
+   (szablon w **config.local.php.example**).
+
+Struktura katalogów (wgraj całość do katalogu WWW, np. public_html):
+
+  index.html          — strona główna
+  contact.php         — obsługa formularza (PHP + PHPMailer)
+  config.local.php    — konfiguracja (NIE z repozytorium — utwórz na serwerze)
+  lib/PHPMailer/      — biblioteka PHPMailer (dołączona do repozytorium)
+  robots.txt, sitemap.xml
+  assets/css/styles.css
+  assets/js/main.js
+  assets/images/
+
+WYSYŁKA E-MAIL (SMTP seohost.pl)
+-------------------------------
+1. W panelu seohost utwórz skrzynkę (np. kontakt@zet-bud.pl) i zapisz hasło.
+2. W danych poczty znajdziesz serwer SMTP — często **serverXXX.seohost.pl** lub **hXX.seohost.pl**
+   (w innym projekcie używany był np. **h67.seohost.pl** — u Ciebie może być inny host z panelu).
+3. Skopiuj **config.local.php.example** → **config.local.php** i uzupełnij:
+   - SMTP_HOST, SMTP_PORT (zwykle **465** z szyfrowaniem SSL),
+   - SMTP_USER = pełny adres skrzynki,
+   - SMTP_PASSWORD,
+   - SMTP_FROM (najczęściej ten sam co SMTP_USER),
+   - SMTP_FROM_NAME, ZETBUD_MAIL_TO (odbiorca zgłoszeń),
+   - ZETBUD_SMTP_HELO = domena strony (**patrycjakuczma.pl** na stagingu, potem **zet-bud.pl**).
+4. Wgraj na serwer cały katalog **lib/PHPMailer** (contact.php ładuje pliki z lib/PHPMailer/src/).
+5. Jeśli SMTP nie działa, sprawdź logi błędów PHP na hostingu; contact.php zapisuje błąd SMTP przez error_log.
+
+Fallback: gdy w config.local.php **nie** zdefiniujesz SMTP_HOST / SMTP_USER / SMTP_PASSWORD,
+skrypt spróbuje wysłać wiadomość przez funkcję mail() (często zablokowaną na współdzielonym hostingu).
+
+FORMULARZ
+---------
+- Wymaga PHP z rozszerzeniem openssl (dla SMTP przez TLS).
+- Pole honeypot w HTML: company_website.
+
+ZDJĘCIA
+-------
+Pliki w assets/images/ możesz podmienić własnymi (zachowaj nazwy lub zmień ścieżki w index.html).
+
+SEO I LOKALNIE
+--------------
+- Spójny NAP w index.html, Google Business Profile i config (adres e-mail firmowy).
+- Zgłoś sitemap.xml w Google Search Console.
+
+STATYCZNY HOSTING (bez PHP)
+---------------------------
+Jeśli nie masz PHP, zmień action formularza na zewnętrzną usługę lub formularz z panelu hostingu.

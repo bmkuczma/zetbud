@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://zet-bud.pl/sitemap.xml
