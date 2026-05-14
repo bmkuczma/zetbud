@@ -34,7 +34,7 @@
       'Construction company: residential new builds, electrical, site preparation, renovations and premium interiors. Kartuzy, Kłosowo, Tri-City. Free quote.',
     ogLocale: 'en_US',
     ogLocaleAlternate: 'pl_PL',
-    ogImageAlt: 'Construction site — Zet-Bud, Pomerania',
+    ogImageAlt: 'ZetBud — construction company logo, Pomerania',
     twTitle: 'Zet-Bud | Homes, electrical, earthworks — Pomerania',
     twDesc: 'Pomerania & Tri-City: new builds, electrical, earthworks, renovations. Free quote — reply usually within 24 h.',
 
