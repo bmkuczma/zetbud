@@ -14,10 +14,37 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-function zetbud_redirect(string $query): void
+function zetbud_wants_json(): bool
 {
-    header('Location: index.html?' . $query . '#kontakt', true, 303);
+    return isset($_SERVER['HTTP_X_ZETBUD_FETCH']) && trim((string) $_SERVER['HTTP_X_ZETBUD_FETCH']) === '1';
+}
+
+/**
+ * Koniec obsługi formularza: przekierowanie (klasyczny POST) albo JSON (fetch z main.js).
+ *
+ * @param array<string, string|int> $params m.in. wycena, opcjonalnie lang, why
+ */
+function zetbud_finish(array $params): never
+{
+    if (!zetbud_wants_json()) {
+        header('Location: index.html?' . http_build_query($params) . '#kontakt', true, 303);
+        exit;
+    }
+    $wycena = (string) ($params['wycena'] ?? '0');
+    $out = $params;
+    $out['wycena'] = $wycena;
+    $out['ok'] = $wycena === '1';
+    header('Content-Type: application/json; charset=UTF-8');
+    header('Cache-Control: no-store');
+    http_response_code(200);
+    echo json_encode($out, JSON_UNESCAPED_UNICODE);
     exit;
+}
+
+function zetbud_redirect(string $query): never
+{
+    parse_str($query, $parsed);
+    zetbud_finish($parsed);
 }
 
 /** @return 'pl'|'en' */
@@ -274,6 +301,9 @@ $formLang = zetbud_form_lang();
 
 /* Pole pułapka — unikaj nazw typu „website”, żeby menedżery haseł go nie uzupełniały. */
 if (!empty($_POST['zetbud_hp'])) {
+    if (zetbud_wants_json()) {
+        zetbud_finish(['wycena' => '1', 'lang' => $formLang]);
+    }
     http_response_code(200);
     exit;
 }

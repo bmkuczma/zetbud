@@ -69,6 +69,14 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem;
   color-scheme: light dark;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  html {
+    overflow-x: hidden;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -79,6 +87,9 @@ html {
 
 body {
   margin: 0;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: clip;
   font-family: var(--font-body);
   font-size: 1rem;
   line-height: 1.55;
@@ -86,6 +97,24 @@ body {
   background: var(--bg);
   -webkit-font-smoothing: antialiased;
   font-feature-settings: "kern" 1, "liga" 1;
+  overflow-wrap: break-word;
+}
+
+@supports not (overflow: clip) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+main {
+  min-width: 0;
+  overflow-x: clip;
+}
+
+@supports not (overflow: clip) {
+  main {
+    overflow-x: hidden;
+  }
 }
 
 img { max-width: 100%; height: auto; display: block; }
@@ -118,6 +147,9 @@ img { max-width: 100%; height: auto; display: block; }
 .container {
   width: min(1140px, 100% - var(--space-8));
   margin-inline: auto;
+  padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px);
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .eyebrow {
@@ -251,6 +283,9 @@ a:hover { color: var(--accent-hover); }
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
   background: color-mix(in srgb, var(--bg) 94%, transparent);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
@@ -587,6 +622,22 @@ body.has-menu-open {
 }
 
 @media (max-width: 899px) {
+  .header-inner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-2);
+    padding-block: var(--space-3);
+  }
+
+  .header-actions {
+    gap: var(--space-1);
+    flex-shrink: 0;
+  }
+
+  .brand-logo {
+    max-width: min(112px, 32vw);
+    height: clamp(1.75rem, 4.5vw, 2.5rem);
+  }
+
   .mobile-nav.is-open {
     display: block;
     position: fixed;
@@ -630,9 +681,16 @@ body.has-menu-open {
 .hero {
   position: relative;
   isolation: isolate;
+  overflow-x: clip;
   padding-block: var(--space-16) var(--space-12);
   border-bottom: 1px solid var(--border);
   background: linear-gradient(165deg, #dfeaf9 0%, var(--bg) 38%, var(--bg) 100%);
+}
+
+@supports not (overflow: clip) {
+  .hero {
+    overflow-x: hidden;
+  }
 }
 
 .hero::before,
@@ -642,6 +700,13 @@ body.has-menu-open {
   inset: -35% -15%;
   z-index: 0;
   pointer-events: none;
+}
+
+@media (max-width: 899px) {
+  .hero::before,
+  .hero::after {
+    inset: -22% -6%;
+  }
 }
 
 .hero::before {
@@ -693,6 +758,7 @@ body.has-menu-open {
   display: grid;
   gap: var(--space-10);
   align-items: stretch;
+  min-width: 0;
 }
 
 @media (min-width: 960px) {
@@ -704,6 +770,7 @@ body.has-menu-open {
 
 .hero-lead {
   max-width: 38rem;
+  min-width: 0;
 }
 
 .hero-title {
@@ -962,6 +1029,7 @@ section {
   display: grid;
   gap: var(--space-6);
   padding: var(--space-6);
+  min-width: 0;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -1226,6 +1294,7 @@ blockquote footer strong { color: var(--text); }
   display: grid;
   gap: var(--space-8);
   align-items: start;
+  min-width: 0;
 }
 @media (min-width: 800px) {
   .area-layout { grid-template-columns: 1fr 1fr; }
@@ -1323,6 +1392,7 @@ blockquote footer strong { color: var(--text); }
 .contact-grid {
   display: grid;
   gap: var(--space-10);
+  min-width: 0;
 }
 @media (min-width: 900px) {
   .contact-grid { grid-template-columns: 0.9fr 1.1fr; }
@@ -1489,6 +1559,20 @@ form .field:focus-within > label {
 @media (max-width: 520px) {
   .field--phone .phone-national-cell {
     flex-basis: 100%;
+  }
+
+  .hero-actions .btn--lg {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+
+  .service-row {
+    padding: var(--space-4);
+  }
+
+  .pill {
+    font-size: 0.8125rem;
+    padding: var(--space-2) var(--space-3);
   }
 }
 
@@ -1658,8 +1742,11 @@ textarea {
   z-index: 40;
   display: flex;
   gap: var(--space-2);
-  padding: var(--space-3) var(--space-4);
-  padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
+  padding: var(--space-3) max(var(--space-4), env(safe-area-inset-right, 0px))
+    max(var(--space-3), env(safe-area-inset-bottom, 0px))
+    max(var(--space-4), env(safe-area-inset-left, 0px));
+  max-width: 100%;
+  box-sizing: border-box;
   background: color-mix(in srgb, var(--surface) 94%, transparent);
   backdrop-filter: blur(12px);
   border-top: 1px solid var(--border);
@@ -1743,6 +1830,7 @@ textarea {
       display: grid;
       gap: var(--space-8);
       align-items: stretch;
+      min-width: 0;
     }
     @media (min-width: 900px) {
       .local-map-grid {
@@ -1785,10 +1873,13 @@ textarea {
       border: 1px solid var(--border);
       background: var(--surface);
       min-height: 280px;
+      max-width: 100%;
+      min-width: 0;
     }
     .map-embed iframe {
       display: block;
       width: 100%;
+      max-width: 100%;
       height: 100%;
       min-height: 320px;
       border: 0;

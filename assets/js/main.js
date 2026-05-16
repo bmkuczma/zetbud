@@ -374,6 +374,55 @@
     return false;
   }
 
+  function handleContactFetchResponse(res, form) {
+    var ct = (res.headers.get('content-type') || '').toLowerCase();
+    if (ct.indexOf('application/json') !== -1) {
+      return res
+        .json()
+        .then(function (j) {
+          var w = j.wycena != null ? String(j.wycena) : '0';
+          var why = j.why != null ? String(j.why) : '';
+          if (w === '1') {
+            if (applyContactFormFeedback('1', why)) {
+              form.reset();
+              syncPhoneBeforeSubmit();
+            }
+          } else if (w === 'rate') {
+            applyContactFormFeedback('rate', why);
+          } else if (w === '0') {
+            applyContactFormFeedback('0', why);
+          } else {
+            applyContactFormFeedback('0', 'mail');
+          }
+        })
+        .catch(function () {
+          applyContactFormFeedback('0', 'mail');
+        });
+    }
+    if (res.redirected) {
+      var u = new URL(res.url, window.location.href);
+      var wycena = u.searchParams.get('wycena');
+      var why = u.searchParams.get('why') || '';
+      if (wycena === '1') {
+        if (applyContactFormFeedback('1', why)) {
+          form.reset();
+          syncPhoneBeforeSubmit();
+        }
+      } else if (wycena === '0' || wycena === 'rate') {
+        applyContactFormFeedback(wycena, why);
+      } else {
+        applyContactFormFeedback('0', 'mail');
+      }
+      return undefined;
+    }
+    if (res.ok) {
+      applyContactFormFeedback('0', '');
+      return undefined;
+    }
+    applyContactFormFeedback('0', 'mail');
+    return undefined;
+  }
+
   var form = document.getElementById('quote-form');
   if (form) {
     form.addEventListener('submit', function (e) {
@@ -397,30 +446,11 @@
         method: 'POST',
         body: new FormData(form),
         credentials: 'same-origin',
+        headers: { 'X-Zetbud-Fetch': '1' },
         redirect: 'follow',
       })
         .then(function (res) {
-          if (res.redirected) {
-            var u = new URL(res.url, window.location.href);
-            var wycena = u.searchParams.get('wycena');
-            var why = u.searchParams.get('why') || '';
-            if (wycena === '1') {
-              if (applyContactFormFeedback('1', why)) {
-                form.reset();
-                syncPhoneBeforeSubmit();
-              }
-            } else if (wycena === '0' || wycena === 'rate') {
-              applyContactFormFeedback(wycena, why);
-            } else {
-              applyContactFormFeedback('0', 'mail');
-            }
-            return;
-          }
-          if (res.ok) {
-            applyContactFormFeedback('0', '');
-            return;
-          }
-          applyContactFormFeedback('0', 'mail');
+          return handleContactFetchResponse(res, form);
         })
         .catch(function () {
           var fb = document.getElementById('form-feedback');
