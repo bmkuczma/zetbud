@@ -12,6 +12,8 @@ var out = path.join(root, 'dist');
 
 var FILES = [
   'index.html',
+  'polityka-prywatnosci.html',
+  'regulamin.html',
   'contact.php',
   'robots.txt',
   'sitemap.xml',

@@ -55,7 +55,8 @@
     trust3d: 'typical first response time',
     trust4t: '5 years',
     trust4d: 'warranty on selected finishing packages',
-    trustSat: 'Average investor rating after handover: <strong>4.8/5</strong> · internal surveys 2024–2025',
+    trustSat:
+      'Average investor rating after handover: <strong>4.8/5</strong> · internal surveys 2024–2025 · <a href="#realizacje">See selected projects</a>',
 
     heroImgAlt: 'Construction site — housing and infrastructure, Zet-Bud Pomerania',
 
@@ -184,7 +185,7 @@
     mapEyebrow: 'Location',
     mapTitle: 'Office & sites — Kartuzy, Tri-City, Pomerania',
     mapIntro:
-      'Direct investor contact and short travel to sites within ca. 50 km of Kartuzy and in the Tri-City. Replace the placeholder map embed with your final Google Maps code when the HQ pin is fixed.',
+      'Direct investor contact and short travel to sites within ca. 50 km of Kartuzy and in the Tri-City. Map: office location at ul. Nad Potokiem 54, Kłosowo — open a full route in Google Maps via the link beside the map.',
 
     napTitle: 'Contact details (NAP)',
     napHours: 'Hours: Mon–Fri 7:30–17:00',
@@ -249,7 +250,7 @@
     formSubmit: 'Send quote request',
     formSubmitting: 'Sending…',
     formNote:
-      'By submitting you confirm you have read the <a href="#">privacy policy</a> and commercial contact rules. We usually reply within one business day.',
+      'By submitting you confirm you have read the <a href="polityka-prywatnosci.html">privacy policy</a> and <a href="regulamin.html">terms of service</a>. We usually reply within one business day.',
 
     footerLead:
       'Zet-Bud in Pomerania: Kartuzy, Kłosowo, Tri-City area. New homes, electrical, earthworks, renovations and interiors — clear scope and site supervision.',
@@ -261,7 +262,25 @@
     footLink5: 'Free quote',
     footerCompany: 'Company details',
     footerRights: 'Zet-Bud Sp. z o.o. All rights reserved.',
-    footerLegal: '<a href="#">Privacy policy</a> · <a href="#">Terms of service</a>',
+    footerLegal:
+      '<a href="polityka-prywatnosci.html">Privacy policy</a> · <a href="regulamin.html">Terms of service</a>',
+
+    trustSeeProjects: 'See selected projects',
+
+    areaCityKlosowo: 'Kłosowo',
+    areaCityKartuzy: 'Kartuzy',
+    areaCityGdansk: 'Gdańsk',
+    areaCityGdynia: 'Gdynia',
+    areaCitySopot: 'Sopot',
+    areaCityZukowo: 'Żukowo',
+    areaCityWejherowo: 'Wejherowo',
+    areaCityKoscierzyna: 'Kościerzyna',
+    areaCityRumia: 'Rumia',
+    areaCityReda: 'Reda',
+    areaCityPruszcz: 'Pruszcz Gdański',
+    areaCityPomorskie: 'All of Pomeranian Voivodeship — by agreement',
+
+    backToTop: 'Back to top',
 
     mobileCtaPhone: 'Phone',
     mobileCtaQuote: 'Quote',
@@ -628,30 +647,30 @@
       lang: 'pl',
       pl: {
         ok: 'Dziękujemy za wiadomość. Odezwiemy się możliwie szybko, zwykle w ciągu jednego dnia roboczego.',
-        err: 'Nie udało się wysłać formularza. Sprawdź pola lub zadzwoń: +48 601 234 567.',
+        err: 'Nie udało się wysłać formularza. Wpisane dane zostały zachowane — sprawdź pola lub zadzwoń: +48 601 234 567.',
         rate: 'Odczekaj chwilę przed ponownym wysłaniem wiadomości.',
         errByWhy: {
-          mail: 'Wiadomość nie została wysłana z powodu problemu po stronie serwera poczty. Spróbuj ponownie za chwilę lub zadzwoń: +48 601 234 567. Na hostingu musi istnieć poprawny plik config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). Port 465 = zwykle SSL (SMTPS), port 587 = STARTTLS — muszą do siebie pasować; możesz wymusić SMTP_ENCRYPTION (ssl lub tls) w config. W logach PHP (error_log) jest komunikat błędu SMTP; chwilowo możesz włączyć ZETBUD_SMTP_DEBUG lub ZETBUD_SMTP_INSECURE (tylko diagnostyka).',
-          bad_name: 'Sprawdź pole z imieniem lub nazwą firmy (min. 2 znaki).',
-          bad_phone: 'Telefon jest za krótki. Wpisz co najmniej 6 cyfr numeru krajowego (bez +48) albo wklej pełny numer — zostanie poprawiony automatycznie.',
-          bad_email: 'Sprawdź poprawność adresu e-mail.',
+          mail: 'Wiadomość nie została wysłana (problem z pocztą na serwerze). Wpisane dane zostały zachowane — spróbuj za chwilę lub zadzwoń: +48 601 234 567.',
+          bad_name: 'Sprawdź pole z imieniem lub nazwą firmy (min. 2 znaki). Wpisane dane zostały zachowane.',
+          bad_phone: 'Telefon jest za krótki. Wpisz co najmniej 6 cyfr numeru krajowego (bez +48) albo wklej pełny numer.',
+          bad_email: 'Sprawdź poprawność adresu e-mail. Wpisane dane zostały zachowane.',
           bad_topic: 'Wybierz typ inwestycji z listy.',
           bad_msg: 'Opis inwestycji powinien mieć co najmniej ok. 10 znaków.',
-          method: 'Formularz wymaga wysłania metodą POST. Otwórz stronę z adresu zet-bud.pl i spróbuj ponownie.',
+          method: 'Nie udało się wysłać formularza. Odśwież stronę i spróbuj ponownie, lub zadzwoń: +48 601 234 567.',
         },
       },
       en: {
         ok: 'Thank you. We will get back to you as soon as possible — usually within one business day.',
-        err: 'The form could not be sent. Check the fields or call +48 601 234 567.',
+        err: 'The form could not be sent. Your entries were kept — check the fields or call +48 601 234 567.',
         rate: 'Please wait a moment before sending again.',
         errByWhy: {
-          mail: 'The message could not be sent due to a mail server issue. Please try again shortly or call +48 601 234 567. The host needs a valid config.local.php (SMTP_HOST, SMTP_USER, SMTP_PASSWORD, SMTP_FROM, ZETBUD_SMTP_HELO). Port 465 usually uses implicit SSL (SMTPS); port 587 uses STARTTLS — they must match; you can force SMTP_ENCRYPTION (ssl or tls) in config. Check PHP error_log for the SMTP error; temporarily enable ZETBUD_SMTP_DEBUG or ZETBUD_SMTP_INSECURE (diagnostics only).',
-          bad_name: 'Please check the name / company field (min. 2 characters).',
-          bad_phone: 'The phone number looks too short. Enter at least 6 national digits (without +48) or paste the full number — it will be normalized.',
-          bad_email: 'Please check that your e-mail address is valid.',
+          mail: 'The message could not be sent (a mail issue on our side). Your entries were kept — try again shortly or call +48 601 234 567.',
+          bad_name: 'Please check the name / company field (min. 2 characters). Your entries were kept.',
+          bad_phone: 'The phone number looks too short. Enter at least 6 national digits (without +48) or paste the full number.',
+          bad_email: 'Please check that your e-mail address is valid. Your entries were kept.',
           bad_topic: 'Please choose a project type from the list.',
           bad_msg: 'Please enter a slightly longer message (at least about 10 characters).',
-          method: 'This form must be submitted via POST from the live site. Please try again from zet-bud.pl.',
+          method: 'The form could not be sent. Refresh the page and try again, or call +48 601 234 567.',
         },
       },
     };

@@ -209,7 +209,7 @@
     );
   }
 
-  var sectionIds = ['uslugi', 'dojazd', 'kontakt'];
+  var sectionIds = ['uslugi', 'realizacje', 'faq', 'dojazd', 'kontakt'];
   var navLinks = document.querySelectorAll('[data-nav-section]');
 
   function updateActiveNav() {
@@ -317,9 +317,45 @@
 
   initPhoneComposer();
 
+  var formFieldByWhy = {
+    bad_name: 'name',
+    bad_phone: 'phone-national',
+    bad_email: 'email',
+    bad_topic: 'topic',
+    bad_msg: 'message',
+  };
+
+  function clearFormFieldErrors() {
+    var formEl = document.getElementById('quote-form');
+    if (!formEl) return;
+    formEl.querySelectorAll('[aria-invalid]').forEach(function (el) {
+      el.removeAttribute('aria-invalid');
+    });
+  }
+
+  function markFormFieldError(why) {
+    clearFormFieldErrors();
+    var id = formFieldByWhy[why];
+    if (!id) return;
+    var el = document.getElementById(id);
+    if (el) {
+      el.setAttribute('aria-invalid', 'true');
+      try {
+        el.focus();
+      } catch (e) {}
+    }
+  }
+
   function applyContactFormFeedback(wycena, why) {
     var fb = document.getElementById('form-feedback');
     if (!fb) return false;
+    if (wycena === '1') {
+      clearFormFieldErrors();
+    } else if (wycena === '0') {
+      markFormFieldError((why || '').replace(/[^a-z_]/gi, ''));
+    } else if (wycena === 'rate') {
+      clearFormFieldErrors();
+    }
     var wf = window.ZETBUD_FORM_FEEDBACK;
     var isEn = document.documentElement.getAttribute('lang') === 'en';
     var pack = wf && wf[isEn ? 'en' : 'pl'];
@@ -549,6 +585,25 @@
   }
 
   initScrollReveals();
+
+  (function initBackToTop() {
+    var btn = document.getElementById('back-to-top');
+    if (!btn) return;
+    var showAfter = 480;
+    function onScroll() {
+      var show = window.scrollY > showAfter;
+      btn.hidden = !show;
+    }
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    btn.addEventListener('click', function () {
+      var motion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      window.scrollTo({ top: 0, behavior: motion });
+      try {
+        btn.blur();
+      } catch (e) {}
+    });
+  })();
 
   var y = document.getElementById('year');
   if (y) y.textContent = String(new Date().getFullYear());
